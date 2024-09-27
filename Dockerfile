@@ -6,4 +6,6 @@ COPY package*.json .
 # Install npm package
 RUN npm install npm
 
+RUN npm install axios
+
 COPY . .
