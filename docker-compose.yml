@@ -1,0 +1,14 @@
+services:
+  node:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: secret_front
+    ports:
+      - "3001:3000"
+    tty: true
+    volumes:
+      - /app/node_modules
+      - type: bind
+        source: ./
+        target: /app
