@@ -4,7 +4,6 @@
   }
   
   .query {
-    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -33,7 +32,6 @@
   }
   
   .right-panel {
-    flex: 2;
     display: flex;
     justify-content: center;
     align-items: center;
