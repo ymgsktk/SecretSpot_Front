@@ -7,3 +7,6 @@ COPY package*.json .
 RUN npm install npm
 
 COPY . .
+
+RUN apk update && apk add --no-cache git
+RUN apk add sudo
