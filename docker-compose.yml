@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: secret_front
     ports:
-      - "3001:3000"
+      - "3000:3000"
     tty: true
     volumes:
       - /app/node_modules
