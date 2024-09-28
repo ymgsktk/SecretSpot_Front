@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json .
 # Install npm package
-RUN npm install npm
+RUN npm install -g next@14.2.4
 
 RUN npm install axios
 

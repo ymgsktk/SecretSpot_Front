@@ -3,7 +3,7 @@
     height: 100vh;
   }
   
-  .left-panel {
+  .query {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -12,12 +12,24 @@
     background-color: #f0f0f0;
   }
   
-  .left-panel input {
+  .inputquery {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  }
+
+  .inputquery input{
+    font-size: 20px;
+  }
+
+  .searchbutton{
+    margin-right:40%;
+    margin-left: 40%;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
   
   .right-panel {
