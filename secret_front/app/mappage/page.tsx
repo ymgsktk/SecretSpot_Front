@@ -155,10 +155,10 @@ const MapPage: React.FC = () => {
         <h2>アイテム一覧</h2>
         {data.length > 0 ? (
           data.map((item, index) => (
-            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`}>
+            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
               <p>アイテム {index + 1}: {item.name}</p>
-              <button className='choose-button' onClick={() => handleRouteSelection(item)}>選択</button>
-              <button className='detail-button'>詳細</button>
+              <button className='choose-button' onClick={() => handleRouteSelection(item)} disabled={selectedIndex !== index}>選択</button>
+              <button className='detail-button' disabled={selectedIndex !== index}>詳細</button>
             </div>
           ))
         ) : (
