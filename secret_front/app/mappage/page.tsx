@@ -38,15 +38,15 @@ const MapPage: React.FC = () => {
 
   const currentLocationIcon = {
     url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-    scaledSize: isLoaded ? new window.google.maps.Size(40, 40) : new window.google.maps.Size(0, 0),
+    scaledSize: isLoaded ? new window.google.maps.Size(40, 40) : undefined,
   };
 
   const otherLocationIcon = {
     url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-    scaledSize: isLoaded ? new window.google.maps.Size(50, 50) : new window.google.maps.Size(0, 0),
+    scaledSize: isLoaded ? new window.google.maps.Size(50, 50) : undefined,
   };
 
-  const selectedIconSize = isLoaded ? new window.google.maps.Size(60, 60) : new window.google.maps.Size(0, 0);
+  const selectedIconSize = isLoaded ? new window.google.maps.Size(60, 60) : undefined;
 
   const handleMarkerClick = (item: any) => {
     // Google Maps APIがロードされていることを確認

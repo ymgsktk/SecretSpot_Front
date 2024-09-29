@@ -12,6 +12,8 @@ RUN npm install axios@1.7.7
 
 RUN npm install @react-google-maps/api@2.19.3 react-router-dom@6.26.2
 
+RUN npm install @types/google.maps@3.58.1 
+
 RUN npm install @radix-ui/themes@3.1.4
 RUN npm install @radix-ui/react-icons@1.3.0
 
