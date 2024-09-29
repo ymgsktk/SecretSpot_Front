@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { GoogleMap, Marker, useJsApiLoader, DirectionsService, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import './page.css';
 
 const MapPage: React.FC = () => {
@@ -17,7 +17,7 @@ const MapPage: React.FC = () => {
     googleMapsApiKey: process.env.NEXT_PUBLIC_APIKEY || '',
   });
 
-  const [directions, setDirections] = useState<any | null>(null);
+  let [directions, setDirections] = useState<any>(null);
 
   useEffect(() => {
     const storedData = localStorage.getItem('searchData');
@@ -48,8 +48,7 @@ const MapPage: React.FC = () => {
 
   const selectedIconSize = isLoaded ? new window.google.maps.Size(60, 60) : undefined;
 
-  const handleMarkerClick = (item: any) => {
-    // Google Maps APIがロードされていることを確認
+  const handleMarkerClick = (item: any, index: number) => {
     if (isLoaded && window.google) {
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
@@ -62,11 +61,11 @@ const MapPage: React.FC = () => {
           if (status === window.google.maps.DirectionsStatus.OK) {
             setDirections(result);
           } else {
-            console.error('Error fetching directions', result);
+            alert(`Error: ${status}-${result}`);
           }
         }
       );
-      setSelectedIndex(data.indexOf(item));
+      setSelectedIndex(index); // 選択されたマーカーのインデックスを更新
     } else {
       console.error("Google Maps API is not loaded yet.");
     }
@@ -101,20 +100,23 @@ const MapPage: React.FC = () => {
             zoom={12}
           >
             {/* 現在地のマーカー */}
-            <Marker position={{ lat: currentPlace.lat, lng: currentPlace.lng }} icon={currentLocationIcon} />
-
+            {!directions &&(
+              <Marker position={{ lat: currentPlace.lat, lng: currentPlace.lng }} icon={currentLocationIcon} />
+            )}
             {/* その他のマーカー */}
             {data.map((item, index) => (
-              <Marker
-                key={index}
-                position={{ lat: item.lat, lng: item.lng }}
-                title={item.name}
-                icon={{
-                  ...otherLocationIcon,
-                  scaledSize: selectedIndex === index ? selectedIconSize : otherLocationIcon.scaledSize 
-                }}
-                onClick={() => handleMarkerClick(item)}
-              />
+              selectedIndex !== index && ( // 選択されたマーカー以外を表示
+                <Marker
+                  key={index}
+                  position={{ lat: item.lat, lng: item.lng }}
+                  title={item.name}
+                  icon={{
+                    ...otherLocationIcon,
+                    scaledSize: selectedIndex === index ? selectedIconSize : otherLocationIcon.scaledSize 
+                  }}
+                  onClick={() => handleMarkerClick(item, index)} // インデックスを渡す
+                />
+              )
             ))}
 
             {/* 経路を描画 */}
