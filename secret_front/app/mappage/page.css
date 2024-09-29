@@ -1,0 +1,35 @@
+.map-container {
+    width: 600px;
+    height: 400px;
+  }
+  
+  .page-container {
+    display: flex;
+  }
+  
+  .item-list {
+    width: 30%;
+    padding-right: 20px;
+  }
+  
+  .map-wrapper {
+    width: 70%;
+  }
+  
+  /* MapPage.css */
+
+.item-container {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .item-container.selected {
+    background-color: rgb(255, 152, 152); 
+  }
+  
+  .item-button {
+    margin-right: 5px;
+  }
+  

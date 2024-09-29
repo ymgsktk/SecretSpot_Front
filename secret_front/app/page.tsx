@@ -36,11 +36,10 @@ const Home: React.FC = () => {
       [name]: value,
     });
   };
-
   // Google Maps APIのロード
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyAeUfMMhg1ZvHsHXo7RHrvbzKji9-c-LYk', // ここにAPIキーを入力
+    googleMapsApiKey: process.env.NEXT_PUBLIC_APIKEY||'', // ここにAPIキーを入力
   });
 
   // マップクリック時にマーカーの位置を更新する
@@ -131,15 +130,15 @@ const Home: React.FC = () => {
           <h1 className="title">穴場スポット</h1>
         </div>
         <div className="inputquery">
-          {showMap && isLoaded && ( // showMapがtrueの時だけ地図を表示
-            <div className={`map-container ${showMap ? 'show' : ''}`}> {/* アニメーション用のクラスを追加 */}
+          {showMap && isLoaded && ( 
+            <div className={`map-container ${showMap ? 'show' : ''}`}>
               <GoogleMap
-                mapContainerStyle={containerStyle} // マップコンテナのスタイルを指定
-                center={center} // マップの中心位置
-                zoom={10} // ズームレベル
-                onClick={onMapClick} // マップクリック時に緯度経度を取得
+                mapContainerStyle={containerStyle} 
+                center={center} 
+                zoom={10} 
+                onClick={onMapClick}
               >
-                <Marker position={markerPosition} /> {/* クリックした位置にマーカーを表示 */}
+                <Marker position={markerPosition} />
               </GoogleMap>
             </div>
           )}
