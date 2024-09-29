@@ -1,18 +1,25 @@
 .map-container {
     width: 600px;
-    height: 400px;
+    height: auto;
   }
   
   .page-container {
     display: flex;
+    min-height: 100vh;
   }
   
   .item-list {
+    flex :1;
     width: 30%;
     padding-right: 20px;
+    background-color: #f0f0f0;
+    overflow-y: auto;
+    
   }
   
   .map-wrapper {
+    flex: 2;
+    min-height: 100vh;
     width: 70%;
   }
   
@@ -23,10 +30,19 @@
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
+    background-color: #ffffff;
+  }
+  .item-container:hover{
+    background-color: rgb(246, 246, 246);
   }
 
   .item-container.selected {
-    background-color: rgb(255, 152, 152); 
+    border: 2px solid rgb(255, 0, 0);
+
+  }
+
+  .item-container.selected:hover{
+    background-color: rgb(255, 223, 223); 
   }
   
   .item-button {

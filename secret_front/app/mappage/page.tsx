@@ -4,23 +4,49 @@ import { useSearchParams } from 'next/navigation';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import './page.css';
 
+interface Route{
+  origin: { lat: number, lng: number };
+  destination: { lat: number, lng: number };
+  directions: google.maps.DirectionsResult | null;
+}
+
+interface Location {
+  lat: number;
+  lng: number;
+  name?:String;
+}
+
+
 const MapPage: React.FC = () => {
   const searchParams = useSearchParams();
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const current = localStorage.getItem('currentplace');
+  const[routes,setRoutes] = useState<Route[]>([]);//複数の経路を保持する
+  const [waypoints, setWaypoints] = useState<Location[]>([]);// 経由地の配列
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);//ユーザが現在選択中のスポット
+  const [data, setData] = useState<Location[]>([]);
+  let [directions, setDirections] = useState<any>(null);
+  const [departurePoint, setDeparturePoint] = useState<Location | null>(null); // 出発地
 
-  const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };
+  const current = localStorage.getItem('currentplace');//現在地
+  const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };//現在地情報をJSON形式に変える
 
-  const [data, setData] = useState<any[]>([]);
+  useEffect(() => {
+    const storedDeparturePoint = localStorage.getItem('currentplace');
+    if (storedDeparturePoint) {
+        setDeparturePoint(JSON.parse(storedDeparturePoint));
+    } else {
+        setDeparturePoint(currentPlace); // 初期地点を設定
+        localStorage.setItem('currentplace', JSON.stringify(currentPlace)); // 初期地点を保存
+    }
+}, []);
+
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_APIKEY || '',
   });
 
-  let [directions, setDirections] = useState<any>(null);
-
   useEffect(() => {
-    const storedData = localStorage.getItem('searchData');
+    const storedData = localStorage.getItem('searchData');//バックエンドからもろてきた情報
     if (storedData) {
       setData(JSON.parse(storedData));
     }
@@ -43,10 +69,10 @@ const MapPage: React.FC = () => {
 
   const otherLocationIcon = {
     url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
-    scaledSize: isLoaded ? new window.google.maps.Size(50, 50) : undefined,
+    scaledSize: isLoaded ? new window.google.maps.Size(35, 35) : undefined,
   };
 
-  const selectedIconSize = isLoaded ? new window.google.maps.Size(60, 60) : undefined;
+  const selectedIconSize = isLoaded ? new window.google.maps.Size(35, 35) : undefined;
 
   const handleMarkerClick = (item: any, index: number) => {
     if (isLoaded && window.google) {
@@ -55,6 +81,10 @@ const MapPage: React.FC = () => {
         {
           origin: currentPlace,
           destination: { lat: item.lat, lng: item.lng },
+          waypoints: waypoints.map(waypoint => ({
+            location: new google.maps.LatLng(waypoint.lat, waypoint.lng),
+            stopover: true,
+        })),
           travelMode: window.google.maps.TravelMode.DRIVING,
         },
         (result, status) => {
@@ -71,6 +101,54 @@ const MapPage: React.FC = () => {
     }
   };
 
+  const handleRouteSelection = async (selectedLocation: Location) => {
+    if(!departurePoint)return;
+
+    const directionsService = new google.maps.DirectionsService();
+
+
+    directionsService.route(
+      {
+        origin: { lat: departurePoint.lat, lng: departurePoint.lng },
+        destination: { lat: selectedLocation.lat, lng: selectedLocation.lng },
+        waypoints: waypoints.map(waypoint => ({
+                location: new google.maps.LatLng(waypoint.lat, waypoint.lng),
+                stopover: true,
+            })),
+        travelMode: google.maps.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          console.log(waypoints)
+          setRoutes(prevRoutes => [...prevRoutes, {
+            origin: departurePoint,
+            destination: selectedLocation,
+            waypoints: waypoints.map(waypoint => ({
+              location: new google.maps.LatLng(waypoint.lat, waypoint.lng),
+              stopover: true,
+          })),
+            directions: result,
+        }]);
+        fetchNextLocations(selectedLocation)
+        setWaypoints(prevWaypoints => [...prevWaypoints, selectedLocation]); // 選択した地点を経由地に追加
+    } else {
+        console.error(`Error fetching directions: ${status}`);
+    }
+  }
+);
+};
+
+  
+
+  const fetchNextLocations = (selectedLocation:Location) => {
+    const newLocations = [
+      { name: 'お台場', lat: 35.6275, lng: 139.774 },
+      { name: '横浜ランドマークタワー', lat: 35.454, lng: 139.631 },
+    ];
+    setData(newLocations);
+    console.log(setData)
+  };
+
   return (
     <div className='page-container'>
       <div className='item-list'>
@@ -79,7 +157,7 @@ const MapPage: React.FC = () => {
           data.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`}>
               <p>アイテム {index + 1}: {item.name}</p>
-              <button className='choose-button'>選択</button>
+              <button className='choose-button' onClick={() => handleRouteSelection(item)}>選択</button>
               <button className='detail-button'>詳細</button>
             </div>
           ))
@@ -101,11 +179,11 @@ const MapPage: React.FC = () => {
           >
             {/* 現在地のマーカー */}
             {!directions &&(
-              <Marker position={{ lat: currentPlace.lat, lng: currentPlace.lng }} icon={currentLocationIcon} />
+              <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} icon={currentLocationIcon} />
             )}
             {/* その他のマーカー */}
             {data.map((item, index) => (
-              selectedIndex !== index && ( // 選択されたマーカー以外を表示
+             // selectedIndex !== index && ( // 選択されたマーカー以外を表示
                 <Marker
                   key={index}
                   position={{ lat: item.lat, lng: item.lng }}
@@ -116,7 +194,7 @@ const MapPage: React.FC = () => {
                   }}
                   onClick={() => handleMarkerClick(item, index)} // インデックスを渡す
                 />
-              )
+             // )
             ))}
 
             {/* 経路を描画 */}
