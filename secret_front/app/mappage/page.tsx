@@ -111,6 +111,11 @@ const MapPage: React.FC = () => {
   const selectedIconSize = isLoaded ? new window.google.maps.Size(35, 35) : undefined;
 
   const handleMarkerClick = (item: any, index: number) => {
+    if(item.lat == currentPlace.lat && item.lng == currentPlace.lng){
+      setShowDetails(false);
+    }else{
+      setShowDetails(true);
+    }
     setSelectedDetail({
       url: item.url,
       name: item.name,
