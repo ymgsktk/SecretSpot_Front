@@ -8,7 +8,7 @@ import './page.css';
 // マップのサイズを指定
 const containerStyle: React.CSSProperties = {
   width: '100%',
-  height: '400px',
+  height: '600px',
 };
 
 // マップの初期中心位置
@@ -27,7 +27,29 @@ const Home: React.FC = () => {
   const [markerPosition, setMarkerPosition] = useState<google.maps.LatLngLiteral>(center); // マーカーの位置の型を指定
   const [showMap, setShowMap] = useState(false); // 地図の表示状態を管理
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null); // クリックしたマーカーの位置を保存
+  const [address, setAddress] = useState<string>('');
 
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAddress(e.target.value);
+  };
+  const handleAddressSubmit = async () => {
+    if (address) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results) {
+          const{ lat, lng } = results[0].geometry.location;
+          setMarkerPosition({ lat: lat(), lng: lng() }); 
+          const newplace = {
+            lat: lat(),
+            lng: lng()
+          }
+          localStorage.setItem('currentplace', JSON.stringify(newplace));
+        } else {
+          alert('住所が見つかりませんでした。');
+        }
+      });
+    }
+  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -55,27 +77,37 @@ const Home: React.FC = () => {
   }, []);
 
   // ボタンをクリックして地図を表示する関数
+  /*
   const handleShowMap = () => {
     setShowMap(true);
-  };
+  };*/
 
   const handleSearchClick = () => {
+    //バックエンド側に今まで到達したことのある住所と、出発地点の情報を渡す。
     const mockData = [{
+      url : "https://www.img-ikyu.com/contents/dg/yahoo_contents/kanko/area/tokyo_tokyoeki.jpg?auto=compress,format&lossless=0&fit=crop&w=500&h=500",
       name: "東京駅",
       address: "東京都千代田区丸の内１丁目",
       evaluate: 3.6,
       lat: 35.6812362,
       lng: 139.7649361,
       pricelevels: 2000,
-      distanceTime: 14
+      distanceTime: { 
+        hour: 14,
+        min : 35,
+      }
     },{
+      url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUCdsXIJJH4V4DLKPU2mIpfT10NOrXo9l83g&s",
       name: "東京都庁",
       address: "東京都新宿区西新宿２丁目８−１",
       evaluate: 4.5,
       lat: 35.6894569,
       lng: 139.6917295,
       pricelevels: 1000,
-      distanceTime: 14
+      distanceTime: { 
+        hour: 15,
+        min : 12,
+      }
     }];
 
     // localStorageにデータを保存する
@@ -116,21 +148,31 @@ const Home: React.FC = () => {
           />
         </div>
         <div className='inputquery'>
-          <p>出発地点を選択:</p>
-          <button onClick={handleShowMap} className="show-map-button">地図を表示</button>
+          <p>出発地点を入力:</p>
+          <div>
+            <input
+              className='adress-input'
+              type="text"
+              value={address}
+              onChange={handleAddressChange}
+              placeholder="住所を入力してください"
+            />
+            <button onClick={handleAddressSubmit}>住所検索</button>
+          </div>
+          {/*<button onClick={handleShowMap} className="show-map-button">地図を表示</button>*/}
         </div>
         <div className='inputquery'>
-        <Link href={`/mappage?lat=${markerPosition.lat}&lng=${markerPosition.lng}`}>
-          <button className="searchbutton" onClick={handleSearchClick}>検索</button>
-        </Link>
-      </div>
+          <Link href={`/mappage?lat=${markerPosition.lat}&lng=${markerPosition.lng}`}>
+            <button className="searchbutton" onClick={handleSearchClick}>スポット検索</button>
+          </Link>
+        </div>
       </div>
       <div className='right'>
         <div className="right-panel">
           <h1 className="title">穴場スポット</h1>
         </div>
-        <div className="inputquery">
-          {showMap && isLoaded && ( 
+        <div className="map">
+          {isLoaded && ( 
             <div className={`map-container ${showMap ? 'show' : ''}`}>
               <GoogleMap
                 mapContainerStyle={containerStyle} 
@@ -144,13 +186,6 @@ const Home: React.FC = () => {
           )}
         </div>
       </div>
-      {selectedPosition && (
-        <div className="selected-position">
-          <p>選択された位置:</p>
-          <p>緯度: {selectedPosition.lat}</p>
-          <p>経度: {selectedPosition.lng}</p>
-        </div>
-      )}
     </div>
   );
 };
