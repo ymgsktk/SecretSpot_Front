@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
+import { useNavigate } from 'react-router-dom';
 import './page.css';
 
 interface Route{
@@ -46,6 +47,7 @@ const MapPage: React.FC = () => {
   const current = localStorage.getItem('currentplace');//現在地
   const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };//現在地情報をJSON形式に変える
   const [showDetails, setShowDetails] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const storedDeparturePoint = localStorage.getItem('currentplace');
@@ -265,6 +267,17 @@ const handleAddRouteSelection = (selectedLocation: Location) => {
   setWaypoints(prevWaypoints => [...prevWaypoints, selectedLocation]); // 選択した地点を経由地に追加
 }
 
+const handlefinroute = () => {
+  const queryParams = new URLSearchParams({
+      currentPlace: JSON.stringify(current),
+      waypoints: JSON.stringify(waypoints),
+      selectedDetail: JSON.stringify(selectedDetail),
+  }).toString();
+
+  router.push(`/result?${queryParams}`);
+};
+
+
   
 
   const fetchNextLocations = (selectedLocation:Location) => {//バックエンドと通信する機能。返り値としてスポット情報をもらう
@@ -321,7 +334,7 @@ const handleAddRouteSelection = (selectedLocation: Location) => {
           <button className='back-to-depbox' onClick={() =>handlebacktodep()}>初期化</button>
           <button className='back-to-home' onClick={() =>handlebacktohome()}>帰宅経路表示</button>
           {<button className='back-to-depbox' onClick={() =>handlebacktoroute()}>１つ戻る</button>}
-          <button className='fin-route'>経路終了</button>
+          <button className='fin-route' onClick={handlefinroute}>経路終了</button>
         </div>
       </div>
 
