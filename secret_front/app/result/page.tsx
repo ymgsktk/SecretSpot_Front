@@ -77,11 +77,15 @@ const Result: React.FC = () => {
       const calculateDirections = () => {
         if (isInitialLoad) {
         if (isLoaded && window.google && currentPlace) {
-            // ここで currentPlace が定義されていることを確認
+            console.log("result_waypoints",waypoints)
+            if(selectedDetail.lat != currentPlace.lat && selectedDetail.lng != currentPlace.lng){
+                const array = waypoints.length-1
+                waypoints.splice(array, 1);
+            }
             const directionsService = new window.google.maps.DirectionsService();
             directionsService.route(
                 {
-                    origin: new google.maps.LatLng(currentPlace.lat, currentPlace.lng), // ここで currentPlace を使用
+                    origin: new google.maps.LatLng(currentPlace.lat, currentPlace.lng), 
                     destination: selectedDetail,
                     waypoints: waypoints.map(waypoint => ({
                         location: new google.maps.LatLng(waypoint.lat, waypoint.lng),

@@ -43,6 +43,7 @@ const MapPage: React.FC = () => {
   let [directions, setDirections] = useState<any>(null);
   const [departurePoint, setDeparturePoint] = useState<Location | null>(null); // 出発地
   const [selectedDetail, setSelectedDetail] = useState<SpotDetail | null>(null);
+  const [choseDetail, setChoseDetail] = useState<SpotDetail | null>(null);
   const router = useRouter();
   const current = localStorage.getItem('currentplace');//現在地
   const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };//現在地情報をJSON形式に変える
@@ -163,6 +164,7 @@ const MapPage: React.FC = () => {
 
   const handleRouteSelection = async (selectedLocation: Location) => {
     if(!departurePoint)return;
+    setChoseDetail(selectedDetail)
     fetchNextLocations(selectedLocation)
 /*   
     const directionsService = new google.maps.DirectionsService();
@@ -255,6 +257,7 @@ const handlebacktohome = () =>{
     currentPlace.pricelevels =0,
     currentPlace.distanceTime = { hour: 0, min: 0},
     setShowDetails(false);
+    setChoseDetail(currentPlace)
     handleMarkerClick(currentPlace,0)
   }else{
     alert("帰宅経路失敗")
@@ -272,7 +275,7 @@ const handlefinroute = () => {
   const queryParams = new URLSearchParams({
       currentPlace: JSON.stringify(current),
       waypoints: JSON.stringify(waypoints),
-      selectedDetail: JSON.stringify(selectedDetail),
+      selectedDetail: JSON.stringify(choseDetail),
   }).toString();
 
   router.push(`/result?${queryParams}`);
