@@ -212,10 +212,11 @@ const handlebacktodep = () =>{
 const handlebacktoroute = () => {
   if (waypoints.length > 0) {
     //ここから
-    const lastWaypoint = waypoints[waypoints.length - 2]; 
-    console.log("w")
+    const lastWaypoint = waypoints[waypoints.length - 1]; 
+    console.log("back")
+    console.log("waypointsbefore",waypoints)
     const array = waypoints.length-1
-    waypoints.splice(array, 1);
+    waypoints.splice(array, 2);
     console.log("newwaypoints",waypoints)
     setWaypoints(waypoints); 
     //ここまでで最新の経由値を削除
@@ -241,7 +242,7 @@ const handlebacktoroute = () => {
       handleMarkerClick(currentPlace,0);
     }
   } else {
-    alert('戻る選択がありません。');
+    alert('これ以上戻れません');
   }
 }
 
@@ -333,7 +334,7 @@ const handlefinroute = () => {
         <div className='button1'>
           <button className='back-to-depbox' onClick={() =>handlebacktodep()}>初期化</button>
           <button className='back-to-home' onClick={() =>handlebacktohome()}>帰宅経路表示</button>
-          {<button className='back-to-depbox' onClick={() =>handlebacktoroute()}>１つ戻る</button>}
+          <button className='back-to-depbox' onClick={() =>handlebacktoroute()}>１つ戻る</button>
           <button className='fin-route' onClick={handlefinroute}>経路終了</button>
         </div>
       </div>
