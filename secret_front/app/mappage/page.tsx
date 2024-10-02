@@ -24,7 +24,20 @@ interface SpotDetail {
   evaluate: number;
   lat:number;
   lng:number;
-  pricelevels: number;
+  priceLevels: number;
+  distanceTime: {
+    hour: number;
+    min: number;
+  };
+}
+interface Spot{//latとlng変換用インタフェース
+  url: string;
+  name: string;
+  address: string;
+  evaluate: number;
+  lat:string;
+  lng:string;
+  priceLevels: number;
   distanceTime: {
     hour: number;
     min: number;
@@ -83,13 +96,32 @@ const MapPage: React.FC = () => {
   });
 
   useEffect(() => {
-    const storedData = localStorage.getItem('searchData'); // バックエンドからもろてきた情報
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      setData(parsedData);
-      setallData([parsedData]); 
+    const storedData1 = localStorage.getItem('searchData') || ''; // バックエンドからもろてきた情報
+
+    // localStorageから取得したデータが空でない場合に処理を行う
+    if (storedData1) {
+        try {
+            const parsedData = JSON.parse(storedData1); // 取得した文字列をパース
+            console.log("aa",parsedData)
+
+            // 'data'が存在する場合、stateにセット
+            if (parsedData) {
+              const formattedData = parsedData.map((items:Spot) => ({
+                ...items,
+                lat: parseFloat(items.lat),  // 文字列を浮動小数点数に変換
+                lng: parseFloat(items.lng)   // 文字列を浮動小数点数に変換
+            }));
+                setData(formattedData); 
+                console.log(formattedData)// dataプロパティをセット
+                setallData([formattedData]); // 全データもセット
+            } else {
+                console.error("No 'data' property in parsed data:", parsedData);
+            }
+        } catch (error) {
+            console.error("Error parsing JSON data:", error);
+        }
     }
-  }, []);
+}, []);
 
   const mapContainerStyle: React.CSSProperties = {
     width: '95%',
@@ -126,7 +158,7 @@ const MapPage: React.FC = () => {
       lng: item.lng,
       address: item.address,
       evaluate: item.evaluate, 
-      pricelevels: item.pricelevels,
+      priceLevels: item.pricelevels,
       distanceTime: {
         hour: item.distanceTime.hour,
         min: item.distanceTime.min,
@@ -290,10 +322,10 @@ const handlefinroute = () => {
         url:"https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/main_image/public/migration_article_images/ranking/spot-odaiba-key.jpg?itok=XBRmwyWT",
         name: 'お台場', 
         lat: 35.6275, 
-        lng: 139.774 ,
+        lng: 139.774,
         address: "東京都新宿区西新宿２丁目８−１",
         evaluate: 5.0,
-        pricelevels: 3000,
+        priceLevels: 3000,
         distanceTime: { 
           hour: 17,
           min : 13,
@@ -306,7 +338,7 @@ const handlefinroute = () => {
         lng: 139.631,
         address: "東京都新宿区西新宿２丁目８−１",
         evaluate: 2.4,
-        pricelevels: 500,
+        priceLevels: 500,
         distanceTime: { 
           hour: 6,
           min : 5,
@@ -398,7 +430,7 @@ const handlefinroute = () => {
                 評価: <StarRating rating={selectedDetail.evaluate} />
               </div>
 
-              <p>価格レベル: ¥{selectedDetail.pricelevels}</p>
+              <p>価格レベル: ¥{selectedDetail.priceLevels}</p>
 
               <p>
                 距離時間: {selectedDetail.distanceTime.hour}時{selectedDetail.distanceTime.min}分

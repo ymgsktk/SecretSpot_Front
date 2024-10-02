@@ -10,22 +10,44 @@ interface Waypoint {
     lng: number;
     name: string;
   }
-
+interface SpotDetail {
+  url: string;
+  name: string;
+  address: string;
+  evaluate: number;
+  lat:number;
+  lng:number;
+  priceLevels: number;
+  distanceTime: {
+    hour: number;
+    min: number;
+  };
+}
 const Result: React.FC = () => {
     const searchParams = useSearchParams();   
     // クエリパラメータを取得
     const currentPlace2 = searchParams.get('currentPlace');  
     const selectedDetail2 = searchParams.get('selectedDetail');
     const waypoints2= searchParams.get('waypoints');
+    
    // const currentPlace = currentPlace2 ? JSON.parse(currentPlace2) : { lat: 35.681236, lng: 139.767125 };
    const current = localStorage.getItem('currentplace');//現在地
     const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };//現在地情報をJSON形式に変える
     const selectedDetail = selectedDetail2 ? JSON.parse(selectedDetail2) : null;
+    const [select, setSelected] = useState<SpotDetail | null>(null);
+  
+    
     const waypoints: Waypoint[] = waypoints2 ? JSON.parse(waypoints2) : [];
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     let [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
     const [departurePoint, setDeparturePoint] = useState<Location | null>(null);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
+    const [showDetails, setShowDetails] = useState(false);
+    const [center, setCenter] = useState({
+      lat: select ? select.lat :  currentPlace.lat,
+      lng: select ? select.lng : currentPlace.lng,
+    });
+    
     const router = useRouter();
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
@@ -70,10 +92,10 @@ const Result: React.FC = () => {
         width: '95%',
         height: '500px',
       };
-      const center = {
+     /*const center = {
         lat: currentPlace.lat,
         lng: currentPlace.lng,
-      };
+      };*/
       const calculateDirections = () => {
         if (isInitialLoad) {
         if (isLoaded && window.google && currentPlace) {
@@ -121,8 +143,29 @@ const Result: React.FC = () => {
             router.push("/"); 
         }
     }
-    const handleMarkerClick = (index:number) =>{
+    const handleMarkerClick = (item:any, index:number) =>{
+      setCenter({lat: item.lat,lng: item.lng})
+      console.log("center",center)
+      if(item.lat == currentPlace.lat && item.lng == currentPlace.lng){
+        setShowDetails(false);
+      }else{
+        setShowDetails(true);
+      }
+      setSelected({
+        url: item.url,
+        name: item.name,
+        lat: item.lat,
+        lng: item.lng,
+        address: item.address,
+        evaluate: item.evaluate, 
+        priceLevels: item.pricelevels,
+        distanceTime: {
+          hour: item.distanceTime.hour,
+          min: item.distanceTime.min,
+        }
+      });
         setSelectedIndex(index);
+        console.log("selectedIndex",selectedIndex)
     }
 
 
@@ -133,7 +176,8 @@ const Result: React.FC = () => {
         {waypoints.length > 0 ? (
           waypoints.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
-              <p>{index + 1}番目: {item.name}</p>
+              <p>{String.fromCharCode(66 + index)}: {item.name}</p>
+              <p className="distance-time">{item.distanceTime}</p>
               </div>
           ))
         ) : (
@@ -156,9 +200,11 @@ const Result: React.FC = () => {
             center={center}
             zoom={12}
           >
-            {!directions &&(
-              <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} />
-            )}
+           
+              {waypoints.map((item, index) => (
+              <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} onClick={() => handleMarkerClick(item, index)}/>
+            ))}
+           
             
 
             {directions && <DirectionsRenderer directions={directions} />}
@@ -167,28 +213,28 @@ const Result: React.FC = () => {
           <p>Loading Map...</p>
         )}
         </div>
-     
+        {showDetails && (
       <div className="details-container">
-          {selectedDetail ? (
+          {select ? (
             <div className="detail-content">
-              <img src={selectedDetail.url} alt={selectedDetail.name} className="spot-image" />
-              <h2>{selectedDetail.name}</h2>
-              <p>住所: {selectedDetail.address}</p>
+              <img src={select.url} alt={select.name} className="spot-image" />
+              <h2>{select.name}</h2>
+              <p>住所: {select.address}</p>
               <div>
-                評価: <StarRating rating={selectedDetail.evaluate} />
+                評価: <StarRating rating={select.evaluate} />
               </div>
 
-              <p>価格レベル: ¥{selectedDetail.pricelevels}</p>
+              <p>価格レベル: ¥{select.priceLevels}</p>
 
               <p>
-                距離時間: {selectedDetail.distanceTime.hour}時{selectedDetail.distanceTime.min}分
+                距離時間: {select.distanceTime.hour}時{select.distanceTime.min}分
               </p>
             </div>
           ) : (
             <p>スポット詳細情報</p>
           )}
         </div>
-
+        )}
       </div>
     </div>
   );
