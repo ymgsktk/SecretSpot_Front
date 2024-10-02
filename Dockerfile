@@ -9,3 +9,6 @@ RUN npm install npm
 RUN npm install axios
 
 COPY . .
+
+RUN apk update && apk add --no-cache git
+RUN apk add sudo

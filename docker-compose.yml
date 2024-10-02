@@ -3,7 +3,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    container_name: secret_front
+    container_name: secret_front_api
     ports:
       - "3001:3000"
     tty: true
