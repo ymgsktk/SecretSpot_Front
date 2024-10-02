@@ -92,8 +92,8 @@ const MapPage: React.FC = () => {
   }, []);
 
   const mapContainerStyle: React.CSSProperties = {
-    width: '100%',
-    height: '500px',
+    width: '95%',
+    height: '600px',
   };
 
   const center = {
@@ -111,7 +111,7 @@ const MapPage: React.FC = () => {
     scaledSize: isLoaded ? new window.google.maps.Size(35, 35) : undefined,
   };
 
-  const selectedIconSize = isLoaded ? new window.google.maps.Size(35, 35) : undefined;
+  const selectedIconSize = isLoaded ? new window.google.maps.Size(0, 0) : undefined;
 
   const handleMarkerClick = (item: any, index: number) => {
     if(item.lat == currentPlace.lat && item.lng == currentPlace.lng){
@@ -322,7 +322,7 @@ const handlefinroute = () => {
   return (
     <div className='page-container'>
       <div className='item-list'>
-        <h2>スポット一覧</h2>
+        <h2 className='header1'>スポットを探す：</h2>
         {data.length > 0 ? (
           data.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
@@ -343,13 +343,16 @@ const handlefinroute = () => {
       </div>
 
       <div className='map-wrapper'>
-        <h1>スポット選択</h1>
-
+        <div className='header'>
+          <h1 className='title'>スポット選択</h1>
+        </div>
+        <div className='maps'>
         {isLoaded ? (
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
             zoom={12}
+            className="maps"
           >
             {!directions &&(
               <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} icon={currentLocationIcon} />
@@ -368,12 +371,14 @@ const handlefinroute = () => {
                 />
              // )
             ))}
+        
 
             {directions && <DirectionsRenderer directions={directions} />}
           </GoogleMap>
         ) : (
           <p>Loading Map...</p>
         )}
+        </div>
       {showDetails && (
       <div className="details-container">
           {selectedDetail ? (

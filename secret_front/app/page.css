@@ -11,19 +11,23 @@ html, body {
 
 .container {
     display: fixed;
+    align-items: center;
     height: 100vh;
   }
-  
+  .input-des{
+    color: #ffffff;
+    font-size: 20px;
+  }
   .query {
     padding-top: 3%;
     padding-left: 1%;
     padding-right: 1%;
     width: 30%;
     position: fixed;
-    background-color: #e8f0ff;
+    background-color: #0b8b10;
     overflow-y: auto;
     height: 100vh;
-
+    z-index: 2;
 }
   
   .inputquery {
@@ -33,10 +37,12 @@ html, body {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
+    z-index: 2;
   }
 
   .inputquery input{
     font-size: 20px;
+    z-index: 2;
   }
 
   .searchbutton{
@@ -44,13 +50,20 @@ html, body {
     padding-left: 40%;
     padding-top: 7px;
     padding-bottom: 7px;
+    z-index: 2;
   }
   
   .right-panel {
+    z-index: 10;
+    margin-left: 30%;
+    padding-top: 2%;
+    padding-bottom: 2%;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 1;
   }
   
   .title {
@@ -60,21 +73,35 @@ html, body {
   
 
 
-  .right{
-    padding-top: 3%;
-    padding-left: 1%;
-    padding-right: 1%;
+  .map{
+    background-image: url("https://beiz.jp/images_M/wood-texture/wood-texture_00017.jpg");
+    padding-top: 2%;
     margin-left: 30%; 
     min-height: 100vh;
+    height:100vh;
     width: calc(100% - 30%); 
+    z-index: 2;
   }
+  .map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3); 
+    z-index: 0;
+  }
+  
 
   .adress-input{
     width: 100%;
     font-size: 15px;
-    padding: 10px
+    padding: 10px;
+    z-index: 2;
   }
 
-  .map{
-    height:100vh;
+  .map-container{
+    display:flex;
+    justify-content: center;
   }

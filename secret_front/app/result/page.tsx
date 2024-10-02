@@ -67,7 +67,7 @@ const Result: React.FC = () => {
       };
 
       const mapContainerStyle: React.CSSProperties = {
-        width: '100%',
+        width: '95%',
         height: '500px',
       };
       const center = {
@@ -127,9 +127,9 @@ const Result: React.FC = () => {
 
 
     return (
-        <div className='page-container'>
+    <div className='page-container'>
       <div className='item-list'>
-        <h2>スポット一覧</h2>
+        <h2 className='title3'>スポット一覧</h2>
         {waypoints.length > 0 ? (
           waypoints.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
@@ -146,8 +146,10 @@ const Result: React.FC = () => {
       </div>
 
       <div className='map-wrapper'>
-        <h1>経路完成</h1>
-
+        <div className='header2'>
+            <h1 className='title1'>経路完成</h1>
+        </div>
+        <div className='maps2'>
         {isLoaded ? (
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
@@ -157,23 +159,14 @@ const Result: React.FC = () => {
             {!directions &&(
               <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} />
             )}
-            {waypoints.map((item, index) => (
-             // selectedIndex !== index && ( // 選択されたマーカー以外を表示
-                <Marker
-                  key={index}
-                  position={{ lat: item.lat, lng: item.lng }}
-                  title={item.name}
-                  
-                 
-                />
-             // )
-            ))}
+            
 
             {directions && <DirectionsRenderer directions={directions} />}
           </GoogleMap>
         ) : (
           <p>Loading Map...</p>
         )}
+        </div>
      
       <div className="details-container">
           {selectedDetail ? (

@@ -7,7 +7,7 @@ import './page.css';
 
 // マップのサイズを指定
 const containerStyle: React.CSSProperties = {
-  width: '100%',
+  width: '95%',
   height: '600px',
 };
 
@@ -118,9 +118,9 @@ const Home: React.FC = () => {
     <div className="container">
       <div className="query">
         <div className='inputquery'>
-          <p>予算：</p>
+          <p className='input-des'>予算：</p>
           <input
-            type="text"
+            type="number"
             name="input1"
             placeholder=""
             value={inputs.input1}
@@ -128,7 +128,7 @@ const Home: React.FC = () => {
           />
         </div>
         <div className='inputquery'>
-          <p>出発時間：</p>
+          <p className='input-des'>出発時間：</p>
           <input
             type="time"
             name="input2"
@@ -138,7 +138,7 @@ const Home: React.FC = () => {
           />
         </div>
         <div className='inputquery'>
-          <p>帰宅時間：</p>
+          <p className='input-des'>帰宅時間：</p>
           <input
             type="time"
             name="input3"
@@ -148,7 +148,7 @@ const Home: React.FC = () => {
           />
         </div>
         <div className='inputquery'>
-          <p>出発地点を入力:</p>
+          <p className='input-des'>出発地点を入力:</p>
           <div>
             <input
               className='adress-input'
@@ -169,7 +169,7 @@ const Home: React.FC = () => {
       </div>
       <div className='right'>
         <div className="right-panel">
-          <h1 className="title">穴場スポット</h1>
+          <h1 className="title">穴場すぽっと</h1>
         </div>
         <div className="map">
           {isLoaded && ( 

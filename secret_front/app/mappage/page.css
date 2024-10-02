@@ -21,19 +21,27 @@ html, body {
   padding-right: 1%;
   width: 30%;
   position: fixed;
-  background-color: #e8f0ff;
+  background-color: #0b8b10;
   overflow-y: auto;
   height: 100vh;
-
+  z-index: 1;
 }
 
 .map-wrapper {
-  padding-top: 3%;
-  padding-left: 1%;
-  padding-right: 1%;
+  background-image: url("https://beiz.jp/images_M/wood-texture/wood-texture_00017.jpg");
   margin-left: 30%; 
   min-height: 100vh;
   width: calc(100% - 30%); 
+}
+.map-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); 
+  z-index: 0;
 }
 
 /* MapPage.css */
@@ -62,12 +70,16 @@ html, body {
 }
 
 .details-container {
+  position: relative;
+  margin-left:2%;
+  margin-right:2%;
   height: auto; 
   /* overflow-y: auto; */
   background-color: #f9f9f9;
   padding: 10px;
   margin-top: 10px;
   border: 1px solid #ccc;
+  z-index: 2;
 }
 
 .detail-content {
@@ -80,4 +92,31 @@ html, body {
   height: auto;      /* 縦横比を保持 */
   border-radius: 8px;
   margin-bottom: 10px;
+}
+
+.header{
+  display: flex;
+  justify-content: center;
+    align-items: center;
+  position:relative;
+  background-color: #ffffff;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  
+}
+
+.maps{
+  margin-top: 3%;
+  display:flex;
+  justify-content: center;
+}
+
+.title {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.header1{
+  color: #ffffff;
+  margin-bottom: 2%;
 }
