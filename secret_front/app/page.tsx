@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import Link from 'next/link'; // Next.jsのLinkを使用
 import './page.css';
+import FetchServerInfo from './API/front_api';
 
 // マップのサイズを指定
 const containerStyle: React.CSSProperties = {
@@ -84,7 +85,7 @@ const Home: React.FC = () => {
 
   const handleSearchClick = () => {
     //バックエンド側に今まで到達したことのある住所と、出発地点の情報を渡す。
-    const mockData = [{
+    const APIdata = [{
       url : "https://www.img-ikyu.com/contents/dg/yahoo_contents/kanko/area/tokyo_tokyoeki.jpg?auto=compress,format&lossless=0&fit=crop&w=500&h=500",
       name: "東京駅",
       address: "東京都千代田区丸の内１丁目",
@@ -109,9 +110,15 @@ const Home: React.FC = () => {
         min : 12,
       }
     }];
-
+    /*const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "");
+    const deptime = inputs.input2; 
+    const arrtime = inputs.input3;
+    const [dep_hours, dep_minutes] = deptime.split(':').map(Number); 
+    const [arr_hours, arr_minutes] = arrtime.split(':').map(Number); 
+    const APIdata = FetchServerInfo({lat: storedDeparturePoint.lat, lng: storedDeparturePoint.lng},address,{hour:dep_hours, min:dep_minutes},{hour:arr_hours, min:arr_minutes},parseInt(inputs.input1))
+*/
     // localStorageにデータを保存する
-    localStorage.setItem('searchData', JSON.stringify(mockData));
+    localStorage.setItem('searchData', JSON.stringify(APIdata));
   };
 
   return (

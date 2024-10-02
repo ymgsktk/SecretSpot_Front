@@ -285,7 +285,7 @@ const handlefinroute = () => {
   
 
   const fetchNextLocations = (selectedLocation:Location) => {//バックエンドと通信する機能。返り値としてスポット情報をもらう
-    const newLocations : SpotDetail[] = [
+    const newLocations : SpotDetail[] = [//テストデータ
       { 
         url:"https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/main_image/public/migration_article_images/ranking/spot-odaiba-key.jpg?itok=XBRmwyWT",
         name: 'お台場', 
@@ -313,6 +313,14 @@ const handlefinroute = () => {
         } 
       },
     ];
+    /*const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "");
+    const deptime = inputs.input2; 
+    const arrtime = inputs.input3;
+    const [dep_hours, dep_minutes] = deptime.split(':').map(Number); 
+    const [arr_hours, arr_minutes] = arrtime.split(':').map(Number); 
+    const APIdata = FetchServerInfo({lat: storedDeparturePoint.lat, lng: storedDeparturePoint.lng},address,{hour:dep_hours, min:dep_minutes},{hour:arr_hours, min:arr_minutes},parseInt(inputs.input1))
+*/
+
     setData(newLocations);
     console.log("data",data)
     setallData(prevItems => [...prevItems, newLocations]);
