@@ -177,7 +177,7 @@ const Result: React.FC = () => {
           waypoints.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
               <p>{String.fromCharCode(66 + index)}: {item.name}</p>
-              <p className="distance-time">{item.distanceTime}</p>
+              
               </div>
           ))
         ) : (
