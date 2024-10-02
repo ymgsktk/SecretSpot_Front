@@ -17,6 +17,10 @@ interface Location {
   lng: number;
   name?:String;
 }
+interface Time{
+  hour:number;
+  min:number;
+}
 interface SpotDetail {
   url: string;
   name: string;
@@ -49,6 +53,7 @@ const MapPage: React.FC = () => {
   const searchParams = useSearchParams();
   const[routes,setRoutes] = useState<Route[]>([]);//複数の経路を保持する
   const [waypoints, setWaypoints] = useState<Location[]>([]);// 経由地の配列
+  const [waypoints_time,setWaypointsTime] = useState<Time[]>([]);// 経由地の到着時間配列
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);//ユーザが現在選択中のスポット
   //const [selectionHistory, setSelectionHistory] = useState<(number | null)[]>([]); // 選択履歴
   const [data, setData] = useState<SpotDetail[]>([]);//地点Xからの提案スポットを格納している
@@ -306,7 +311,7 @@ const handleAddRouteSelection = (selectedLocation: Location) => {
 const handlefinroute = () => {
   const queryParams = new URLSearchParams({
       currentPlace: JSON.stringify(current),
-      waypoints: JSON.stringify(waypoints),
+      waypoints: JSON.stringify(data),
       selectedDetail: JSON.stringify(choseDetail),
   }).toString();
 
@@ -366,7 +371,10 @@ const handlefinroute = () => {
         {data.length > 0 ? (
           data.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
-              <p>候補地 {index + 1}: {item.name}</p>
+              <div className='spot-box'>
+                <p>候補地 {index + 1}: {item.name}</p>
+                <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
+              </div>
               <button className='choose-button' onClick={() => handleAddRouteSelection(item)} disabled={selectedIndex !== index}>選択</button>
               </div>
               

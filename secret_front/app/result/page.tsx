@@ -37,7 +37,7 @@ const Result: React.FC = () => {
     const [select, setSelected] = useState<SpotDetail | null>(null);
   
     
-    const waypoints: Waypoint[] = waypoints2 ? JSON.parse(waypoints2) : [];
+    const waypoints: SpotDetail[] = waypoints2 ? JSON.parse(waypoints2) : [];
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
     let [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
     const [departurePoint, setDeparturePoint] = useState<Location | null>(null);
@@ -176,8 +176,10 @@ const Result: React.FC = () => {
         {waypoints.length > 0 ? (
           waypoints.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
+              <div className='spot-box'>
               <p>{String.fromCharCode(66 + index)}: {item.name}</p>
-              
+              <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
+              </div>
               </div>
           ))
         ) : (

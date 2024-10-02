@@ -117,3 +117,15 @@
     color: #ffffff;
     margin-bottom: 3%;
 }
+
+.spot-box{
+  display: flex;              
+  justify-content: space-between; 
+  align-items: center;
+}
+
+.distance-time{
+  color: #858585;
+  font-size: 15px;
+  margin-left: 3px;
+}
