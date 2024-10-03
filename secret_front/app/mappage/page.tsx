@@ -167,6 +167,7 @@ const MapPage: React.FC = () => {
     }else{
       setShowDetails(true);
     }
+    setChoseDetail(item)
     setSelectedDetail({
       url: item.url,
       name: item.name,
@@ -337,6 +338,7 @@ const handleAddRouteSelection = (selectedLocation: Location) => {
 }
 
 const handlefinroute = () => {
+  console.log("choseDetail",choseDetail)
   const queryParams = new URLSearchParams({
       currentPlace: JSON.stringify(current),
       waypoints: JSON.stringify(waypoints),
@@ -421,17 +423,21 @@ const handlefinroute = () => {
   return (
     <div className='page-container'>
       <div className='item-list'>
-        <h2 className='header1'>スポットを探す：</h2>
+        <h2 className='header1'>候補地一覧：</h2>
         {data.length > 0 ? (
           data.map((item, index) => (
-            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}${isChildClicked ? 'no-click' : ''}`} onClick={() => handleMarkerClick(item, index)}>
-             
-                <p className='spot-name'>候補地 {index + 1}: {item.name}<span className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</span></p>
-               {/* <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>*/}
-         
-              <button className='choose-button' onClick={(event) => {event.stopPropagation(); setIsChildClicked(true); handleAddRouteSelection(item)}}disabled={selectedIndex !== index}>選択</button>
-            </div>
-              
+            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
+                <div className='left-button'>
+                  <div className='left-button-top'>
+                    <p className='proposed-site'>候補地 {index + 1}: </p>
+                    <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
+                  </div>
+                <p className='spot-name'>{item.name}</p>
+                </div>
+                <div className='right-button'>
+              <button className='choose-button' onClick={() =>  handleAddRouteSelection(item)}disabled={selectedIndex !== index}>選択</button>
+              </div>
+            </div>       
           ))
         ) : (
           <p>データがありません。</p>

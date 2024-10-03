@@ -5,6 +5,7 @@ import React, { useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import './page.css'
+import {sendMessageToLine} from '../LINEAPI/lineapi'
 interface Waypoint {
     lat: number;
     lng: number;
@@ -101,7 +102,7 @@ const Result: React.FC = () => {
       const calculateDirections = () => {
         if (isInitialLoad) {
         if (isLoaded && window.google && currentPlace) {
-            console.log("result_waypoints",waypoints)
+            console.log("result_waypoints",selectedDetail,currentPlace)
             if(selectedDetail.lat != currentPlace.lat && selectedDetail.lng != currentPlace.lng){
                 const array = waypoints.length-1
                 waypoints.splice(array, 1);
@@ -134,7 +135,7 @@ const Result: React.FC = () => {
     }
     
       const handleshare = () =>{
-        //
+        sendMessageToLine(waypoints);
       }
 
 

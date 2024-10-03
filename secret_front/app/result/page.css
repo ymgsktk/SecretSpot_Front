@@ -44,7 +44,7 @@
     z-index: 0;
   }
   
-  /* MapPage.css */
+
   .item-container {
     border: 1px solid gray;
     border-radius: 5px;
@@ -71,7 +71,7 @@
   
   .details-container {
     height: auto; 
-    /* overflow-y: auto; */
+ 
     margin-left: 3%;
     margin-right:2%;
     background-color: #f9f9f9;
@@ -88,8 +88,8 @@
   
   .spot-image {
     width: 100%;
-    max-width: 400px;  /* 最大幅を指定 */
-    height: auto;      /* 縦横比を保持 */
+    max-width: 400px; 
+    height: auto;      
     border-radius: 8px;
     margin-bottom: 10px;
   }
