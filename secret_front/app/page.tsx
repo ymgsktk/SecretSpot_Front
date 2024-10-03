@@ -134,6 +134,8 @@ const Home: React.FC = () => {
   
           // localStorageにデータを保存する
           localStorage.setItem('searchData', JSON.stringify(APIdata));
+          localStorage.setItem('arrivalTime',arrtime);
+          localStorage.setItem('budget',inputs.input1);
       } catch (error) {
           console.error("Error fetching data from server:", error);
       }

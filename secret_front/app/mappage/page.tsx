@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import { useNavigate } from 'react-router-dom';
 import './page.css';
+import FetchServerInfo from '../API/front_api';
 
 interface Route{
   origin: { lat: number, lng: number };
@@ -46,6 +47,11 @@ interface Spot{//latとlng変換用インタフェース
     hour: number;
     min: number;
   };
+}
+
+interface SpotData {
+  lat: number | string; 
+  lng: number | string; 
 }
 
 
@@ -103,22 +109,22 @@ const MapPage: React.FC = () => {
   useEffect(() => {
     const storedData1 = localStorage.getItem('searchData') || ''; // バックエンドからもろてきた情報
 
-    // localStorageから取得したデータが空でない場合に処理を行う
+   
     if (storedData1) {
         try {
-            const parsedData = JSON.parse(storedData1); // 取得した文字列をパース
+            const parsedData = JSON.parse(storedData1);
             console.log("aa",parsedData)
 
-            // 'data'が存在する場合、stateにセット
+            
             if (parsedData) {
               const formattedData = parsedData.map((items:Spot) => ({
                 ...items,
-                lat: parseFloat(items.lat),  // 文字列を浮動小数点数に変換
-                lng: parseFloat(items.lng)   // 文字列を浮動小数点数に変換
+                lat: parseFloat(items.lat),  
+                lng: parseFloat(items.lng)  
             }));
                 setData(formattedData); 
-                console.log(formattedData)// dataプロパティをセット
-                setallData([formattedData]); // 全データもセット
+                console.log(formattedData)
+                setallData([formattedData]); 
             } else {
                 console.error("No 'data' property in parsed data:", parsedData);
             }
@@ -202,7 +208,7 @@ const MapPage: React.FC = () => {
   const handleRouteSelection = async (selectedLocation: Location) => {
     if(!departurePoint)return;
     setChoseDetail(selectedDetail)
-    fetchNextLocations(selectedLocation)
+    fetchNextLocations()
 /*   
     const directionsService = new google.maps.DirectionsService();
 
@@ -320,9 +326,7 @@ const handlefinroute = () => {
 
 
   
-
-  const fetchNextLocations = (selectedLocation:Location) => {//バックエンドと通信する機能。返り値としてスポット情報をもらう
-    const newLocations : SpotDetail[] = [//テストデータ
+/*const newLocations : SpotDetail[] = [//テストデータ
       { 
         url:"https://travel.rakuten.co.jp/mytrip/sites/mytrip/files/styles/main_image/public/migration_article_images/ranking/spot-odaiba-key.jpg?itok=XBRmwyWT",
         name: 'お台場', 
@@ -349,20 +353,42 @@ const handlefinroute = () => {
           min : 5,
         } 
       },
-    ];
-    /*const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "");
-    const deptime = inputs.input2; 
-    const arrtime = inputs.input3;
-    const [dep_hours, dep_minutes] = deptime.split(':').map(Number); 
-    const [arr_hours, arr_minutes] = arrtime.split(':').map(Number); 
-    const APIdata = FetchServerInfo({lat: storedDeparturePoint.lat, lng: storedDeparturePoint.lng},address,{hour:dep_hours, min:dep_minutes},{hour:arr_hours, min:arr_minutes},parseInt(inputs.input1))
-*/
-
-    setData(newLocations);
-    console.log("data",data)
-    setallData(prevItems => [...prevItems, newLocations]);
-    console.log("alldata",alldata)
+    ];*/
+    const fetchNextLocations = async () => {// バックエンドと通信してスポット情報を取得
+      const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "");
+      const deptime = choseDetail?.distanceTime; 
+      const dep_hours = deptime ? deptime.hour : 0; 
+      const dep_minutes = deptime ? deptime.min : 0;
+      const arrtime = localStorage.getItem('arrivalTime');
+      const budget = localStorage.getItem('budget');
+      const parsedBudget = budget !== null ? parseInt(budget) : 0;
+      
+      const [arr_hours, arr_minutes] = arrtime ? arrtime.split(':').map(Number): [0, 0]; 
+      
+     
+      const APIdata = await FetchServerInfo(
+          { lat: storedDeparturePoint.lat, lng: storedDeparturePoint.lng },
+          choseDetail?.address || "",
+          { hour: dep_hours, min: dep_minutes },
+          { hour: arr_hours, min: arr_minutes },
+          parsedBudget
+      );
+  
+     
+      if (APIdata.data) {
+          const convertedData = APIdata.data.map((item: SpotData) => ({
+              ...item,
+              lat: parseFloat(item.lat as string),
+              lng: parseFloat(item.lng as string),
+          }));
+  
+          setData(convertedData); // データをセット
+          console.log("data", convertedData);
+          setallData(prevItems => [...prevItems, ...convertedData]);
+          //console.log("alldata", [...prevItems, ...convertedData]);
+      }
   };
+    
 
   return (
     <div className='page-container'>
