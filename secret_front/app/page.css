@@ -1,107 +1,252 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
-
 html, body {
   height: 100%;
-  overflow-x: hidden; 
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  background-color: #F9F8FD;
 }
-
 .container {
-    display: fixed;
-    align-items: center;
-    height: 100vh;
-  }
-  .input-des{
-    color: #ffffff;
-    font-size: 20px;
-  }
-  .query {
-    padding-top: 3%;
-    padding-left: 1%;
-    padding-right: 1%;
-    width: 30%;
-    position: fixed;
-    background-color: #0b8b10;
-    overflow-y: auto;
-    height: 100vh;
-    z-index: 2;
+  display: fixed;
+  align-items: center;
+  height: 100vh;
 }
-  
-  .inputquery {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    z-index: 2;
-  }
+.title {
+  font-size: 2em;
+  font-weight: bold;
+  position: relative; /* 下線を配置するために必要 */
+  display: inline-block; /* 下線の幅をテキストに合わせる */
+}
+.title::after {
+  content: ''; /* 擬似要素の内容を空にする */
+  display: block; /* ブロック要素として表示 */
+  width: 100%; /* テキストの幅に合わせる */
+  height: 4px; /* 下線の高さ */
+  background-color: #D4D4DC; /* 下線の色 */
+  position: absolute; /* 絶対位置で配置 */
+  bottom: -5px; /* テキストの下に配置 */
+  left: 0; /* 左端に配置 */
+  border-radius: 5px; /* 角を丸くする */
+}
+.input-des {
+  color: #FFFFFF;
+  font-size: 18px;
+  background-color: #7DCE94;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 10px;
+  text-align: center; /* テキストを中央揃え */
+  padding: 10px; /* 全体にパディングを均等に */
+  width: 100%; /* 幅を100%に設定して中央揃えの影響を受けないように */
+  box-sizing: border-box; /* パディングを含むボックスサイズの制御 */
+}
+.input-form {
+  font-size: 16px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.query {
+  padding-top: 3%;
+  padding-left: 1%;
+  padding-right: 1%;
+  width: 30%;
+  position: fixed;
+  background-color: #F9F8FD;
+  overflow-y: auto;
+  height: 100vh;
+  align-items: center;
+  z-index: 2;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* 右側に影を追加 */
+}
+.inputquery1 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* ボタンとテキストの中央揃え */
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding-bottom: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 15pt;
+  align-items: center; /* 子要素を中央揃え */
+}
+.inputquery1 input {
+  width: 98%; /* 各inputの横幅を大きくする */
+  font-size: 14px; /* フォントサイズを少し大きく */
+  padding: 10px;
+  margin: 5px 0; /* 上下に少し余白を追加 */
+}
+.inputquery2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* ボタンとテキストの中央揃え */
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-top: 10pt;
+  /*align-items: center;*/ /* 子要素を中央揃え */
+}
+.inputquery2 input {
+  width: 98%; /* 各inputの横幅を大きくする */
+  font-size: 14px; /* フォントサイズを少し大きく */
+  padding: 10px;
+  margin: 5px 0; /* 上下に少し余白を追加 */
+}
+.address-input-area {
+  display: flex; /* Flexboxで中央揃え */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.adress-input {
+  width: 90%; /* 住所入力の横幅も広げる */
+  font-size: 14px; /* フォントサイズを調整 */
+  margin-bottom: 10px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  height: 50px; /* 縦幅を指定 */
+}
+.adress-input + button {
+  width: 30%; /* 横幅を100%にしてinputqueryと同じに */
+  padding: 2px; /* パディングを調整してボタンを大きく */
+  background-color: #D4D4DC; /* 既存の背景色を維持 */
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* inputqueryの角と揃えます */
+  font-size: 15px; /* フォントサイズを統一 */
+  color: #333; /* テキスト色を濃くして読みやすく */
+  cursor: pointer; /* マウスオーバー時にポインター表示 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ボタンに影をつけて立体感を出す */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ホバー時のエフェクトをスムーズに */
+  height: 50px; /* 縦幅を指定 */
+}
+.adress-input + button:hover {
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.adress-input + button:active {
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+.searchbutton {
+  width: 100%; /* 横幅を100%にしてinputquery1と同じに */
+  padding: 10px; /* パディングを調整してボタンを大きく */
+  background-color: #D4D4DC; /* 既存の背景色を維持 */
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* inputquery1の角と揃えます */
+  font-size: 16px; /* フォントサイズを統一 */
+  color: #333; /* テキスト色を濃くして読みやすく */
+  cursor: pointer; /* マウスオーバー時にポインター表示 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ボタンに影をつけて立体感を出す */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ホバー時のエフェクトをスムーズに */
+}
+.searchbutton:hover {
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.searchbutton:active {
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+.right-panel {
+  z-index: 10;
+  margin-left: 30%;
+  padding-top: 10%;
+  padding-bottom: 2%;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* グラデーションの設定 */
+  background: linear-gradient(to bottom right, #F0F4FF, #E5F9E0);
+  background-size: 200% 100%; /* グラデーションを2倍に広げる */
+  background-position: left; /* 左側にグラデーションを配置 */
+  position: relative;
+  z-index: 1;
+  border-radius: 15px; /* 角を丸く */
+  padding: 20px; /* パディングを広げて余裕を持たせる */
+}
+.title {
+  font: Arial, sans-serif;
+  font-size: 60px;
+  font-weight: bold;
+  color:#3d3d3f;
+}
+.map{
+  padding-top: 2%;
+  margin-left: 30%;
+  min-height: 100vh;
+  height: 100vh;
+  width: calc(100% - 30%);
+  z-index: 2;
+  /* グラデーションの設定 */
+  background: linear-gradient(to bottom right, #F0F4FF, #E5F9E0);
+  background-size: 200% 100%; /* グラデーションを2倍に広げる */
+  background-position: right; /* 右側にグラデーションを配置 */
+}
+.google-map {/*後ほど名前をmap-containerに変える*/
+  background-color: #F9F8FD; /* 既存の背景色 */
+  border-top: 10px solid #7DCE94; /* 上部に細い緑線を追加 */
+  width: 90%;
+  height: 500px;
+  border-radius: 10px; /* 角を丸くする */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  overflow: hidden; /* 角を丸くした際にコンテンツがはみ出さないようにする */
+}
+.map-container {
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+}
 
-  .inputquery input{
-    font-size: 20px;
-    z-index: 2;
-  }
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明の灰色 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease, visibility 0s 1s;
+  z-index: 9999; /* 他の要素より前面に表示 */
+}
+/*
+.loading-overlay.active {
+  opacity: 1; 
+  visibility: visible; 
+  transition: opacity 1s ease; 
+}*/
 
-  .searchbutton{
-    padding-right:40%;
-    padding-left: 40%;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    z-index: 2;
-  }
-  
-  .right-panel {
-    z-index: 10;
-    margin-left: 30%;
-    padding-top: 2%;
-    padding-bottom: 2%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .title {
-    font-size: 2em;
-    font-weight: bold;
-  }
-  
+.spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1); /* 外側の薄いボーダー */
+  border-top: 8px solid white; /* 上部の白いボーダー（アニメーション用） */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite; /* スピナーのアニメーション */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+  margin-top: 20px;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+}
 
 
-  .map{
-    background-image: url("https://beiz.jp/images_M/wood-texture/wood-texture_00017.jpg");
-    padding-top: 2%;
-    margin-left: 30%; 
-    min-height: 100vh;
-    height:100vh;
-    width: calc(100% - 30%); 
-    z-index: 2;
-  }
-  .map::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3); 
-    z-index: 0;
-  }
-  
+body.loading {
+  overflow: hidden; /* ローディング中にスクロールを無効にする */
+}
 
-  .adress-input{
-    width: 100%;
-    font-size: 15px;
-    padding: 10px;
-    z-index: 2;
-  }
-
-  .map-container{
-    display:flex;
-    justify-content: center;
-  }

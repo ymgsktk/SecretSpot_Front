@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import './page.css'
@@ -25,10 +25,12 @@ interface SpotDetail {
 }
 const Result: React.FC = () => {
     const searchParams = useSearchParams();   
+    //console.log("searchParams",searchParams)
     // クエリパラメータを取得
     const currentPlace2 = searchParams.get('currentPlace');  
     const selectedDetail2 = searchParams.get('selectedDetail');
     const waypoints2= searchParams.get('waypoints');
+    console.log("waypoints2",waypoints2)
     
    // const currentPlace = currentPlace2 ? JSON.parse(currentPlace2) : { lat: 35.681236, lng: 139.767125 };
    const current = localStorage.getItem('currentplace');//現在地

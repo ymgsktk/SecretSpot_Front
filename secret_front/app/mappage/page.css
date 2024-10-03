@@ -3,35 +3,20 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 html, body {
   height: 100%;
+  font-family: Arial, sans-serif;
   overflow-x: hidden;
 }
-
-
-.page-container {
+.container {
   display: fixed;
-  min-height: 100vh;
-}
-
-.item-list {
-  padding-top: 3%;
-  padding-left: 1%;
-  padding-right: 1%;
-  width: 30%;
-  position: fixed;
-  background-color: #0b8b10;
-  overflow-y: auto;
+  align-items: center;
   height: 100vh;
-  z-index: 1;
 }
-
 .map-wrapper {
-  background-image: url("https://beiz.jp/images_M/wood-texture/wood-texture_00017.jpg");
-  margin-left: 30%; 
+  margin-left: 30%;
   min-height: 100vh;
-  width: calc(100% - 30%); 
+  width: calc(100% - 30%);
 }
 .map-wrapper::before {
   content: '';
@@ -40,52 +25,48 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.3); 
+  background: linear-gradient(to bottom right, #F0F4FF, #E5F9E0);
   z-index: 0;
 }
-
-/* MapPage.css */
-.item-container {
-  border: 1px solid gray;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #ffffff;
+.header{
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+    align-items: center;
+  position:relative;
+  padding-top: 2%;
+  padding-bottom: 2%;
+  z-index: 1;
 }
-
-.item-container:hover {
-  background-color: rgb(246, 246, 246);
+.title {
+  font-size: 2em;
+  font-weight: bold;
 }
-
-.item-container.selected {
-  border: 2px solid rgb(255, 0, 0);
+.maps {
+  display: flex;
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center;     /* 垂直方向に中央揃え */
+  margin-top: 3%;
+  height: 500px;
+  width: 90%;
+  background-color: #000000; /* 背景色が黒で指定されている部分を維持 */
+  z-index: 1;
 }
-
-.item-container.selected:hover {
-  background-color: rgb(255, 223, 223);
-}
-
-.item-button {
-  margin-right: 5px;
-}
-
 .details-container {
   position: relative;
   margin-left:2%;
   margin-right:2%;
-  height: auto; 
+  height: auto;
   /* overflow-y: auto; */
-  background-color: #f9f9f9;
+  background-color: #F9F9F9;
   padding: 10px;
   margin-top: 10px;
   border: 1px solid #ccc;
-  z-index: 2;
+  z-index: 1;
 }
-
 .detail-content {
   padding: 10px;
 }
-
 .spot-image {
   width: 100%;
   max-width: 400px;  /* 最大幅を指定 */
@@ -93,42 +74,100 @@ html, body {
   border-radius: 8px;
   margin-bottom: 10px;
 }
-
-.header{
-  display: flex;
-  justify-content: center;
-    align-items: center;
-  position:relative;
-  background-color: #ffffff;
-  padding-top: 2%;
-  padding-bottom: 2%;
-  
-}
-
-.maps{
-  margin-top: 3%;
-  display:flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 2em;
-  font-weight: bold;
-}
-
-.header1{
-  color: #ffffff;
-  margin-bottom: 2%;
-}
-
-.spot-box{
-  display: flex;              
-  justify-content: space-between; 
+/* 左の部分 */
+.item-list {
+  position: relative;
+  padding-top: 3%;
+  padding-left: 1%;
+  padding-right: 1%;
+  width: 30%;
+  position: fixed;
+  background-color: #F9F8FD;
+  overflow-y: auto;
+  height: 100vh;
   align-items: center;
+  z-index: 2;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* 右側に影を追加 */
 }
-
-.distance-time{
-  color: #858585;
+.item-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding-bottom: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 15pt;
+  align-items: center;
+  pointer-events: auto; /* ここで通常のクリックを有効に */
+}
+.item-container:hover {
+  transform: translateY(-2px); /* ホバー時に浮く */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時の影を強調 */
+}
+.item-container:active {
+  transform: translateY(0); /* クリック時に元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+.item-container.no-click:active {
+  background-color: #000000;
+  transform: none; /* クリック無効時のスタイル */
+  box-shadow: none; /* 影を無効にする */
+}
+.spot-name{
+  color: #FFFFFF;
+  font-size: 18px;
+  background-color: #7DCE94;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 10px;
+  text-align: center; /* テキストを中央揃え */
+  padding: 10px; /* 全体にパディングを均等に */
+  width: 100%; /* 幅を100%に設定して中央揃えの影響を受けないように */
+  box-sizing: border-box; /* パディングを含むボックスサイズの制御 */
+}
+/* distance-timeとchoose-buttonのスタイル */
+.item-container .distance-time {
+  /*background-color: red;*/
+  color: #4c4c4c;
   font-size: 15px;
-  margin-left: 3px;
+  width: 50%; /* 幅を50%に設定 */
+  text-align: right; /* 右端に揃える */
+}
+.item-container .choose-button {
+  width: 30%; /* ボタンの幅を調整 */
+  background-color: mediumspringgreen;
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* 角を丸める */
+  color: #fff; /* テキスト色を白に */
+  cursor: pointer; /* カーソルをポインターに変更 */
+  padding: 10px; /* パディングを追加 */
+  transition: background-color 0.2s ease; /* 背景色の変化をスムーズに */
+  background-color: mediumspringgreen;
+  pointer-events: auto; /* choose-buttonに対してはクリックを有効に */
+}
+.item-container .choose-button:hover {
+  background-color: darkgreen; /* ホバー時の背景色 */
+}
+.back-to-depbox {
+  width: 24%; /* 横幅を100%にしてinputqueryと同じに */
+  padding: 2px; /* パディングを調整してボタンを大きく */
+  background-color: #D4D4DC; /* 既存の背景色を維持 */
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* inputqueryの角と揃えます */
+  font-size: 15px; /* フォントサイズを統一 */
+  color: #333; /* テキスト色を濃くして読みやすく */
+  cursor: pointer; /* マウスオーバー時にポインター表示 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ボタンに影をつけて立体感を出す */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ホバー時のエフェクトをスムーズに */
+  height: 50px; /* 縦幅を指定 */
+}
+.back-to-depbox:hover {
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.back-to-depbox:active {
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
 }

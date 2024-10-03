@@ -68,11 +68,15 @@ const MapPage: React.FC = () => {
   const [departurePoint, setDeparturePoint] = useState<Location | null>(null); // 出発地
   const [selectedDetail, setSelectedDetail] = useState<SpotDetail | null>(null);
   const [choseDetail, setChoseDetail] = useState<SpotDetail | null>(null);
+  const [choseplace, setChosePlace] = useState<SpotDetail | null>(null);
   const router = useRouter();
   const current = localStorage.getItem('currentplace');//現在地
   const currentPlace = current ? JSON.parse(current) : { lat: 35.681236, lng: 139.767125 };//現在地情報をJSON形式に変える
   const [showDetails, setShowDetails] = useState(true);
   const navigate = useNavigate();
+  const [isChildClicked, setIsChildClicked] = useState(false);
+  const [alertShown, setAlertShown] = useState(false);
+  
 
   useEffect(() => {
     const storedDeparturePoint = localStorage.getItem('currentplace');
@@ -111,6 +115,7 @@ const MapPage: React.FC = () => {
 
    
     if (storedData1) {
+      console.log("storedData",storedData1)
         try {
             const parsedData = JSON.parse(storedData1);
             console.log("aa",parsedData)
@@ -180,6 +185,7 @@ const MapPage: React.FC = () => {
       console.log("waypoints",waypoints)
       console.log("currentPlace",currentPlace)
       console.log("item",item)
+      console.log("alldata",alldata)
       const directionsService = new window.google.maps.DirectionsService();
       directionsService.route(
         {
@@ -205,10 +211,26 @@ const MapPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+      fetchNextLocations(); // choseDetailが更新された後に実行  
+      const arrivalTime2 = localStorage.getItem("arrivalTime")||"" ;
+      const [arrivalHour, arrivalMinute] = arrivalTime2.split(':').map(Number);
+      const hours = parseInt(localStorage.getItem("dep_hours") || "0", 10);
+      const adjustedArrivalTime = arrivalHour < hours ? arrivalHour + 24 : arrivalHour;
+      const timeDifference = adjustedArrivalTime - hours;
+
+      // 2時間以内かつアラートがまだ表示されていない場合
+      if (timeDifference <= 2 && !alertShown) {
+        alert("設定した帰宅時間まであと2時間になりました");
+        setAlertShown(true);  // アラートを表示したことを記録
+      }
+  }, [choseplace]);
+
   const handleRouteSelection = async (selectedLocation: Location) => {
     if(!departurePoint)return;
-    setChoseDetail(selectedDetail)
-    fetchNextLocations()
+    console.log("selectedDetail_111",selectedDetail)
+    setChosePlace(selectedDetail)
+    
 /*   
     const directionsService = new google.maps.DirectionsService();
 
@@ -262,7 +284,7 @@ const handlebacktoroute = () => {
     console.log("waypointsbefore",waypoints)
     const array = waypoints.length-1
     waypoints.splice(array, 2);
-    console.log("newwaypoints",waypoints)
+    console.log("newwaypoints!",waypoints)
     setWaypoints(waypoints); 
     //ここまでで最新の経由値を削除
     //ここから
@@ -317,7 +339,7 @@ const handleAddRouteSelection = (selectedLocation: Location) => {
 const handlefinroute = () => {
   const queryParams = new URLSearchParams({
       currentPlace: JSON.stringify(current),
-      waypoints: JSON.stringify(data),
+      waypoints: JSON.stringify(waypoints),
       selectedDetail: JSON.stringify(choseDetail),
   }).toString();
 
@@ -355,8 +377,9 @@ const handlefinroute = () => {
       },
     ];*/
     const fetchNextLocations = async () => {// バックエンドと通信してスポット情報を取得
-      const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "");
-      const deptime = choseDetail?.distanceTime; 
+      console.log("chosePlace",choseplace)
+      const storedDeparturePoint = selectedDetail ;//JSON.parse(localStorage.getItem('currentplace') || "");
+      const deptime = choseplace?.distanceTime; 
       const dep_hours = deptime ? deptime.hour : 0; 
       const dep_minutes = deptime ? deptime.min : 0;
       const arrtime = localStorage.getItem('arrivalTime');
@@ -364,17 +387,18 @@ const handlefinroute = () => {
       const parsedBudget = budget !== null ? parseInt(budget) : 0;
       
       const [arr_hours, arr_minutes] = arrtime ? arrtime.split(':').map(Number): [0, 0]; 
-      
-     
+      console.log("dep",dep_hours,dep_minutes)
+     if(storedDeparturePoint){
       const APIdata = await FetchServerInfo(
-          { lat: storedDeparturePoint.lat, lng: storedDeparturePoint.lng },
+          { lat: storedDeparturePoint.lat.toString(), lng: storedDeparturePoint.lng.toString() },
           choseDetail?.address || "",
-          { hour: dep_hours, min: dep_minutes },
+          { hour: dep_hours+1, min: dep_minutes },
           { hour: arr_hours, min: arr_minutes },
           parsedBudget
       );
+      
   
-     
+     console.log("mappage-APIdata",APIdata)
       if (APIdata.data) {
           const convertedData = APIdata.data.map((item: SpotData) => ({
               ...item,
@@ -383,8 +407,12 @@ const handlefinroute = () => {
           }));
   
           setData(convertedData); // データをセット
-          console.log("data", convertedData);
-          setallData(prevItems => [...prevItems, ...convertedData]);
+          localStorage.setItem("dep_hours",dep_hours.toString())
+          console.log("converteddata", convertedData);
+          setallData(prevItems => [...prevItems, [...convertedData]]);
+        } else {
+          console.error("storedDeparturePoint is null or undefined");
+        }
           //console.log("alldata", [...prevItems, ...convertedData]);
       }
   };
@@ -396,23 +424,23 @@ const handlefinroute = () => {
         <h2 className='header1'>スポットを探す：</h2>
         {data.length > 0 ? (
           data.map((item, index) => (
-            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
-              <div className='spot-box'>
-                <p>候補地 {index + 1}: {item.name}</p>
-                <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
-              </div>
-              <button className='choose-button' onClick={() => handleAddRouteSelection(item)} disabled={selectedIndex !== index}>選択</button>
-              </div>
+            <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}${isChildClicked ? 'no-click' : ''}`} onClick={() => handleMarkerClick(item, index)}>
+             
+                <p className='spot-name'>候補地 {index + 1}: {item.name}<span className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</span></p>
+               {/* <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>*/}
+         
+              <button className='choose-button' onClick={(event) => {event.stopPropagation(); setIsChildClicked(true); handleAddRouteSelection(item)}}disabled={selectedIndex !== index}>選択</button>
+            </div>
               
           ))
         ) : (
           <p>データがありません。</p>
         )}
-        <div className='button1'>
+        <div className='button-list'>
           <button className='back-to-depbox' onClick={() =>handlebacktodep()}>初期化</button>
-          <button className='back-to-home' onClick={() =>handlebacktohome()}>帰宅経路表示</button>
+          <button className='back-to-depbox' onClick={() =>handlebacktohome()}>帰宅経路</button>
           <button className='back-to-depbox' onClick={() =>handlebacktoroute()}>１つ戻る</button>
-          <button className='fin-route' onClick={handlefinroute}>経路終了</button>
+          <button className='back-to-depbox' onClick={handlefinroute}>経路終了</button>
         </div>
       </div>
 
@@ -459,6 +487,7 @@ const handlefinroute = () => {
             <div className="detail-content">
               <img src={selectedDetail.url} alt={selectedDetail.name} className="spot-image" />
               <h2>{selectedDetail.name}</h2>
+              <p>URL: {selectedDetail.address}</p>
               <p>住所: {selectedDetail.address}</p>
               <div>
                 評価: <StarRating rating={selectedDetail.evaluate} />
@@ -467,7 +496,7 @@ const handlefinroute = () => {
               <p>価格レベル: ¥{selectedDetail.priceLevels}</p>
 
               <p>
-                距離時間: {selectedDetail.distanceTime.hour}時{selectedDetail.distanceTime.min}分
+                到着時間: {selectedDetail.distanceTime.hour}時{selectedDetail.distanceTime.min}分
               </p>
             </div>
           ) : (

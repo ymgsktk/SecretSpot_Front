@@ -1,6 +1,7 @@
 "use client"; // クライアントコンポーネントとして設定
 
 import React, { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import Link from 'next/link'; // Next.jsのLinkを使用
 import './page.css';
@@ -29,6 +30,8 @@ const Home: React.FC = () => {
   const [showMap, setShowMap] = useState(false); // 地図の表示状態を管理
   const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null); // クリックしたマーカーの位置を保存
   const [address, setAddress] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAddress(e.target.value);
@@ -110,7 +113,7 @@ const Home: React.FC = () => {
     }];*/
     const handleSearchClick = async () => {
       // バックエンド側に今まで到達したことのある住所と、出発地点の情報を渡す。
-      
+      setLoading(true);
       const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "{}");
       const deptime = inputs.input2; 
       const arrtime = inputs.input3;
@@ -129,22 +132,27 @@ const Home: React.FC = () => {
               parseInt(inputs.input1)
           );
           const APIdata = response.data;
+          //window.location.reload();
   
           console.log("result0", APIdata);
   
           // localStorageにデータを保存する
+          //localStorage.clear()
           localStorage.setItem('searchData', JSON.stringify(APIdata));
           localStorage.setItem('arrivalTime',arrtime);
           localStorage.setItem('budget',inputs.input1);
+          router.push('/mappage');
       } catch (error) {
           console.error("Error fetching data from server:", error);
+      } finally {
+        setLoading(false); // ローディング終了
       }
   };
 
   return (
     <div className="container">
       <div className="query">
-        <div className='inputquery'>
+        <div className='inputquery1'>
           <p className='input-des'>予算：</p>
           <input
             type="number"
@@ -154,7 +162,7 @@ const Home: React.FC = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div className='inputquery'>
+        <div className='inputquery1'>
           <p className='input-des'>出発時間：</p>
           <input
             type="time"
@@ -164,7 +172,7 @@ const Home: React.FC = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div className='inputquery'>
+        <div className='inputquery1'>
           <p className='input-des'>帰宅時間：</p>
           <input
             type="time"
@@ -174,9 +182,9 @@ const Home: React.FC = () => {
             onChange={handleInputChange}
           />
         </div>
-        <div className='inputquery'>
+        <div className='inputquery1'>
           <p className='input-des'>出発地点を入力:</p>
-          <div>
+          <div className='address-input-area'>
             <input
               className='adress-input'
               type="text"
@@ -188,10 +196,10 @@ const Home: React.FC = () => {
           </div>
           {/*<button onClick={handleShowMap} className="show-map-button">地図を表示</button>*/}
         </div>
-        <div className='inputquery'>
-          <Link href={`/mappage?lat=${markerPosition.lat}&lng=${markerPosition.lng}`}>
+        <div className='inputquery2'>
+          {/*<Link href={`/mappage?lat=${markerPosition.lat}&lng=${markerPosition.lng}`}>*/}
             <button className="searchbutton" onClick={handleSearchClick}>スポット検索</button>
-          </Link>
+          {/*</Link>*/}
         </div>
       </div>
       <div className='right'>
@@ -213,7 +221,14 @@ const Home: React.FC = () => {
           )}
         </div>
       </div>
+      {loading && (
+        <div className={`loading-overlay ${loading ? 'active' : ''}`}>
+          <div className="spinner"></div>
+          <div className="loading-message">データを取得中です...</div>
+        </div>
+      )}
     </div>
+    
   );
 };
 
