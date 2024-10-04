@@ -1,11 +1,19 @@
 import axios from 'axios';
-import line from './line.json'
 
 export const sendMessageToLine = async (message) => {
     const url = "http://127.0.0.1:3030/broadcast";
     //const messagesArray = JSON.parse(message);
-    
-    const data = line
+    console.log("message",message)
+
+    const send = message.map(item => ({
+        text: item.name 
+    }));
+    console.log("send",send)
+
+    const data = {
+        message: `予算 : 1万円\n9:00\n12:00 昼飯\n15:00 京都駅`,
+    };
+    console.log('Broadcast message:', { messages: [{ type: 'text', text: message }] });
 
     try {
         const response = await axios.post(url, data, {
