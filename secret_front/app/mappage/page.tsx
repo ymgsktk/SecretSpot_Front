@@ -23,26 +23,32 @@ interface Time{
   min:number;
 }
 interface SpotDetail {
+  information_url:string;
   url: string;
   name: string;
   address: string;
   evaluate: number;
   lat:number;
   lng:number;
-  priceLevels: number;
+  price_level: any;
+  explanation:string;
+  //type:string;
   distanceTime: {
     hour: number;
     min: number;
   };
 }
 interface Spot{//latとlng変換用インタフェース
+  information_url:string;
   url: string;
   name: string;
   address: string;
   evaluate: number;
   lat:string;
   lng:string;
-  priceLevels: number;
+  price_level: any;
+  explanation: string;
+  //type:string;
   distanceTime: {
     hour: number;
     min: number;
@@ -76,6 +82,8 @@ const MapPage: React.FC = () => {
   const navigate = useNavigate();
   const [isChildClicked, setIsChildClicked] = useState(false);
   const [alertShown, setAlertShown] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selection, setSelection] = useState('tourist_attraction'); //spotかレストランか
   
 
   useEffect(() => {
@@ -88,6 +96,9 @@ const MapPage: React.FC = () => {
     }
 }, []);
 
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelection(e.target.value);  // 選択した値を更新
+  };
   const StarRating = ({ rating }: { rating: number }) => {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5;
@@ -141,7 +152,7 @@ const MapPage: React.FC = () => {
 
   const mapContainerStyle: React.CSSProperties = {
     width: '95%',
-    height: '600px',
+    height: '500px',
   };
 
   const center = {
@@ -169,13 +180,16 @@ const MapPage: React.FC = () => {
     }
     setChoseDetail(item)
     setSelectedDetail({
+      information_url:item.information_url,
       url: item.url,
       name: item.name,
       lat: item.lat,
       lng: item.lng,
       address: item.address,
       evaluate: item.evaluate, 
-      priceLevels: item.pricelevels,
+      price_level: item.price_level,
+      explanation: item.explanation,
+      //type:item.type,
       distanceTime: {
         hour: item.distanceTime.hour,
         min: item.distanceTime.min,
@@ -300,11 +314,14 @@ const handlebacktoroute = () => {
     if (lastWaypoint !== undefined) { // data から必要な情報を取得
       handleMarkerClick(lastWaypoint,0); // 選択された地点を再描画
     } else {
+      currentPlace.information_url="",
       currentPlace.url ="",
       currentPlace.name ="",
       currentPlace.evaluate =0,
       currentPlace.adress ="",
-      currentPlace.pricelevels =0,
+      currentPlace.price_level =0,
+      currentPlace.explanation= "",
+      //type:item.type,
       currentPlace.distanceTime = { hour: 0, min: 0},
       setShowDetails(false);
       handleMarkerClick(currentPlace,0);
@@ -316,11 +333,14 @@ const handlebacktoroute = () => {
 
 const handlebacktohome = () =>{
   if (currentPlace) {
+    currentPlace.information_url="",
     currentPlace.url ="",
     currentPlace.name ="",
     currentPlace.evaluate =0,
     currentPlace.adress ="",
-    currentPlace.pricelevels =0,
+    currentPlace.price_level =0,
+    currentPlace.explanation= "",
+    //type:item.type,
     currentPlace.distanceTime = { hour: 0, min: 0},
     setShowDetails(false);
     setChoseDetail(currentPlace)
@@ -379,6 +399,7 @@ const handlefinroute = () => {
       },
     ];*/
     const fetchNextLocations = async () => {// バックエンドと通信してスポット情報を取得
+      setLoading(true);
       console.log("chosePlace",choseplace)
       const storedDeparturePoint = selectedDetail ;//JSON.parse(localStorage.getItem('currentplace') || "");
       const deptime = choseplace?.distanceTime; 
@@ -396,7 +417,8 @@ const handlefinroute = () => {
           choseDetail?.address || "",
           { hour: dep_hours+1, min: dep_minutes },
           { hour: arr_hours, min: arr_minutes },
-          parsedBudget
+          parsedBudget,
+          selection,
       );
       
   
@@ -417,6 +439,7 @@ const handlefinroute = () => {
         }
           //console.log("alldata", [...prevItems, ...convertedData]);
       }
+      setLoading(false);
   };
     
 
@@ -424,6 +447,26 @@ const handlefinroute = () => {
     <div className='page-container'>
       <div className='item-list'>
         <h2 className='header1'>候補地一覧：</h2>
+        <div className='spot-or-restaurant'>
+          <label>
+          <input
+            type="radio"
+            value="restaurant"
+            checked={selection === 'restaurant'}
+            onChange={handleSelectionChange}
+          />
+          レストラン
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="tourist_attraction"
+              checked={selection === 'tourist_attraction'}
+              onChange={handleSelectionChange}
+            />
+            観光スポット
+          </label>
+        </div>
         {data.length > 0 ? (
           data.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
@@ -460,7 +503,7 @@ const handlefinroute = () => {
             mapContainerStyle={mapContainerStyle}
             center={center}
             zoom={12}
-            className="maps"
+          
           >
             {!directions &&(
               <Marker position={{ lat:departurePoint.lat, lng: departurePoint.lng }} icon={currentLocationIcon} />
@@ -493,17 +536,20 @@ const handlefinroute = () => {
             <div className="detail-content">
               <img src={selectedDetail.url} alt={selectedDetail.name} className="spot-image" />
               <h2>{selectedDetail.name}</h2>
-              <p>URL: {selectedDetail.address}</p>
+              <p>
+              URL: <a href={selectedDetail.information_url} target="_blank" rel="noopener noreferrer">{selectedDetail.information_url}</a>
+              </p>
               <p>住所: {selectedDetail.address}</p>
               <div>
                 評価: <StarRating rating={selectedDetail.evaluate} />
               </div>
 
-              <p>価格レベル: ¥{selectedDetail.priceLevels}</p>
+              <p>価格: {typeof selectedDetail.price_level === 'number' ? `¥${selectedDetail.price_level*1000}~` : selectedDetail.price_level}</p>
 
               <p>
                 到着時間: {selectedDetail.distanceTime.hour}時{selectedDetail.distanceTime.min}分
               </p>
+              <p>概要: {selectedDetail.explanation}</p>
             </div>
           ) : (
             <p>スポット詳細情報</p>
@@ -511,6 +557,12 @@ const handlefinroute = () => {
         </div>
       )}
       </div>
+      {loading && (
+        <div className={`loading-overlay ${loading ? 'active' : ''}`}>
+          <div className="spinner"></div>
+          <div className="loading-message">データを取得中です...</div>
+        </div>
+      )}
     </div>
   );
 };

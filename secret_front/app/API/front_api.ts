@@ -1,4 +1,4 @@
-const FetchServerInfo = async (DepPoint: {lat: string,lng: string}, DepAddress: string, DepartureTime: {hour: number,min: number}, ArrivalTime: {hour: number,min: number}, Budget: number) => {
+const FetchServerInfo = async (DepPoint: {lat: string,lng: string}, DepAddress: string, DepartureTime: {hour: number,min: number}, ArrivalTime: {hour: number,min: number}, Budget: number,type:string) => {
 	try {
 		// POSTメソッドを使用し、リクエストボディにパラメータを含める
         const URL = "http://localhost:8080";
@@ -13,7 +13,8 @@ const FetchServerInfo = async (DepPoint: {lat: string,lng: string}, DepAddress: 
 				DepAddress: DepAddress,
 				DepartureTime: DepartureTime,
 				ArrivalTime: ArrivalTime,
-				Budget: Budget
+				Budget: Budget,
+				type:type
 			})
 		});
 

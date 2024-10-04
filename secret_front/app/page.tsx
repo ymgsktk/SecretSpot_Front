@@ -117,6 +117,7 @@ const Home: React.FC = () => {
       const storedDeparturePoint = JSON.parse(localStorage.getItem('currentplace') || "{}");
       const deptime = inputs.input2; 
       const arrtime = inputs.input3;
+      const select = "tourist_attraction"
       
       // 出発時刻と到着時刻を分解
       const [dep_hours, dep_minutes] = deptime.split(':').map(Number); 
@@ -129,7 +130,8 @@ const Home: React.FC = () => {
               address,
               { hour: dep_hours, min: dep_minutes },
               { hour: arr_hours, min: arr_minutes },
-              parseInt(inputs.input1)
+              parseInt(inputs.input1),
+              select,
           );
           const APIdata = response.data;
           //window.location.reload();

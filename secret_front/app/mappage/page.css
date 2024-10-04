@@ -60,6 +60,8 @@ html, body {
   z-index: 1;
 }
 .details-container {
+  margin-left:3%;
+  margin-right: 3%;
   display: flex;
   justify-content: center; /* 水平方向に中央揃え */
   align-items: center;     /* 垂直方向に中央揃え */
@@ -124,6 +126,11 @@ html, body {
   margin-bottom: 15pt;
   z-index: 3;
 }
+.item-container.selected .left-button{
+  border: 2px solid rgb(182, 0, 0);
+  background-color: rgb(225, 225, 225);
+}
+
 .left-button {
   position: relative;
   width: 75%; /* 左側の幅を80%に設定 */
@@ -208,6 +215,27 @@ html, body {
   background-color: #3D3D3F;
   pointer-events: auto; /* choose-buttonに対してはクリックを有効に */
 }
+.choose-button:disabled{
+  border: none; 
+  width: 100%;
+  height: 100%;
+  border-radius: 0 10px 10px 0; 
+  color: #fff; 
+  background-color: #adadad;
+  pointer-events: none; 
+}
+.right-button:disabled:active {
+  transform: none;
+  box-shadow: none; /* アクティブでも影を適用しない */
+  cursor: not-allowed;
+  pointer-events: none; 
+}
+.right-button:disabled:hover {
+  transform: none; /* アクティブでも無効化状態ならトランスフォームなし */
+  box-shadow: none; /* アクティブでも影を適用しない */
+  cursor: not-allowed;
+  pointer-events: none; 
+}
 .back-to-depbox {
   width: 24%; /* 横幅を100%にしてinputqueryと同じに */
   padding: 2px; /* パディングを調整してボタンを大きく */
@@ -228,4 +256,51 @@ html, body {
 .back-to-depbox:active {
   transform: translateY(0); /* 押したときに元の位置に戻る */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明の灰色 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease, visibility 0s 1s;
+  z-index: 9999; /* 他の要素より前面に表示 */
+}
+/*
+.loading-overlay.active {
+  opacity: 1; 
+  visibility: visible; 
+  transition: opacity 1s ease; 
+}*/
+
+.spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1); /* 外側の薄いボーダー */
+  border-top: 8px solid white; /* 上部の白いボーダー（アニメーション用） */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite; /* スピナーのアニメーション */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-message {
+  margin-top: 20px;
+  color: white;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+
+body.loading {
+  overflow: hidden; /* ローディング中にスクロールを無効にする */
 }

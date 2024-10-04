@@ -1,131 +1,210 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  html, body {
-    height: 100%;
-    overflow-x: hidden;
-  }
-  
-  
-  .page-container {
-    display: fixed;
-    min-height: 100vh;
-  }
-  
-  .item-list {
-    padding-top: 3%;
-    padding-left: 1%;
-    padding-right: 1%;
-    width: 30%;
-    position: fixed;
-    background-color: #0b8b10;
-    overflow-y: auto;
-    height: 100vh;
-    z-index: 2;
-  }
-  
-  .map-wrapper {
-    background-image: url("https://beiz.jp/images_M/wood-texture/wood-texture_00017.jpg");
-    margin-left: 30%; 
-    min-height: 100vh;
-    width: calc(100% - 30%); 
-  }
-  .map-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.3); 
-    z-index: 0;
-  }
-  
-
-  .item-container {
-    border: 1px solid gray;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #ffffff;
-  }
-  
-  .item-container:hover {
-    background-color: rgb(246, 246, 246);
-  }
-  
-  .item-container.selected {
-    border: 2px solid rgb(255, 0, 0);
-  }
-  
-  .item-container.selected:hover {
-    background-color: rgb(255, 223, 223);
-  }
-  
-  .item-button {
-    margin-right: 5px;
-  }
-  
-  .details-container {
-    height: auto; 
- 
-    margin-left: 3%;
-    margin-right:2%;
-    background-color: #f9f9f9;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    position: relative;
-    z-index: 1;
-  }
-  
-  .detail-content {
-    padding: 10px;
-  }
-  
-  .spot-image {
-    width: 100%;
-    max-width: 400px; 
-    height: auto;      
-    border-radius: 8px;
-    margin-bottom: 10px;
-  }
-  
-  .maps2{
-    margin-top: 3%;
-    display:flex;
-    justify-content: center;
-  }
-  .title1 {
-    font-size: 2em;
-    font-weight: bold;
-  }
-  
-  .header2{
-    display: flex;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+}
+.map-wrapper {
+  margin-left: 30%;
+  min-height: 100vh;
+  width: calc(100% - 30%);
+}
+.map-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom right, #F0F4FF, #E5F9E0);
+  z-index: 0;
+}
+.page-container {
+  display: fixed;
+  min-height: 100vh;
+}
+/* 左の部分 */
+.item-list {
+  position: relative;
+  padding-top: 3%;
+  padding-left: 1%;
+  padding-right: 1%;
+  width: 30%;
+  position: fixed;
+  background-color: #F9F8FD;
+  overflow-y: auto;
+  height: 100vh;
+  align-items: center;
+  z-index: 2;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* 右側に影を追加 */
+}
+.item-container {
+  position: relative;
+  justify-content: space-between; /* 左右に均等に配置 */
+  background-color: #F9F8FD; /* 背景色 */
+  margin-top: 10pt;
+  margin-bottom: 15pt;
+  z-index: 3;
+}
+.item-container.selected .spot-box{
+  border: 2px solid rgb(182, 0, 0);
+  background-color: rgb(225, 225, 225);
+}
+.spot-box {
+  position: relative;
+  width: 100%; /* 左側の幅を80%に設定 */
+  padding-bottom: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 15pt;
+  background-color: white;
+  display: flex;
+  flex-direction: column; /* 縦に並べる */
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 4;
+}
+.spot-box:hover {
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.spot-box:active {
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+.spot-box-top {
+  display: flex; /* 横に並べるための設定 */
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+}
+.proposed-site {
+  color: #FFFFFF;
+  font-size: 18px;
+  background-color: #7DCE94;
+  width: 70%;
+  border-radius: 10px 0 0 0;
+  align-items: flex-start; /* 左寄せ */
+  display: flex;
+  padding-left: 10px;
+  margin-bottom: 10px;
+  text-align: center; /* テキストを中央揃え */
+}
+.distance-time {
+  background-color: #7DCE94;
+  width: 30%;
+  border-radius: 0 10px 0 0;
+  align-items: flex-end; /* 右寄せ */
+  display: flex;
+  color: #3D3D3F;
+  font-size: 15px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.detail-content {
+  padding: 10px;
+}
+.title1 {
+  font-size: 2em;
+  font-weight: bold;
+}
+.header2{
+  width: 100%;
+  text-align: center;
   justify-content: center;
     align-items: center;
   position:relative;
-  background-color: #ffffff;
   padding-top: 2%;
   padding-bottom: 2%;
-  }
+  z-index: 1;
+}
 .title3{
-    color: #ffffff;
-    margin-bottom: 3%;
+  font-weight: bold;
 }
-
-.spot-box{
-  display: flex;              
-  justify-content: space-between; 
-  align-items: center;
+.map-and-detail {
+  position: relative;
+  margin-left:2%;
+  margin-right:2%;
+  border-radius: 10px 10px 10px 10px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1); /* 右側に影を追加 */
+  z-index: 1;
+  background-color: pink;
 }
-
-.distance-time{
-  color: #858585;
-  font-size: 15px;
-  margin-left: 3px;
+.maps2 {
+  display: flex;
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center;     /* 垂直方向に中央揃え */
+  border-radius: 10px 10px 0 0;
+  height: 500px;
+  background-color: #000000; /* 背景色が黒で指定されている部分を維持 */
+  z-index: 2;
+}
+.details-container {
+  display: flex;
+  justify-content: center; /* 水平方向に中央揃え */
+  align-items: center;     /* 垂直方向に中央揃え */
+  position: relative;
+  border-radius: 0 0 10px 10px;
+  height: auto;
+  /* overflow-y: auto; */
+  background-color: #F9F9F9;
+  z-index: 2;
+}
+.spot-image {
+  width: 100%;
+  max-width: 400px;  /* 最大幅を指定 */
+  height: auto;      /* 縦横比を保持 */
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+.spot-name {
+  display: inline-block;
+  width: 100%; /* 必要に応じて調整 */
+  vertical-align: top; /* 上揃え */
+  text-align: center; /* 左揃え */
+}
+.back-to-depbox{
+  width: 49%; /* 横幅を100%にしてinputqueryと同じに */
+  padding: 2px; /* パディングを調整してボタンを大きく */
+  background-color: #D4D4DC; /* 既存の背景色を維持 */
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* inputqueryの角と揃えます */
+  font-size: 15px; /* フォントサイズを統一 */
+  color: #333; /* テキスト色を濃くして読みやすく */
+  cursor: pointer; /* マウスオーバー時にポインター表示 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ボタンに影をつけて立体感を出す */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ホバー時のエフェクトをスムーズに */
+  height: 50px; /* 縦幅を指定 */
+}
+.back-to-depbox:hover{
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.back-to-depbox:active {
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
+}
+.back-to-home{
+  width: 49%; /* 横幅を100%にしてinputqueryと同じに */
+  padding: 2px; /* パディングを調整してボタンを大きく */
+  background-color: #D4D4DC; /* 既存の背景色を維持 */
+  border: none; /* 枠線を取り除く */
+  border-radius: 10px; /* inputqueryの角と揃えます */
+  font-size: 15px; /* フォントサイズを統一 */
+  color: #333; /* テキスト色を濃くして読みやすく */
+  cursor: pointer; /* マウスオーバー時にポインター表示 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* ボタンに影をつけて立体感を出す */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* ホバー時のエフェクトをスムーズに */
+  height: 50px; /* 縦幅を指定 */
+}
+.back-to-home:hover{
+  transform: translateY(-2px); /* ホバー時にボタンが少し浮き上がる */
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* ホバー時に影を強調 */
+}
+.back-to-home:active{
+  transform: translateY(0); /* 押したときに元の位置に戻る */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 押したときの影を弱める */
 }

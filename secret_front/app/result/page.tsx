@@ -12,13 +12,15 @@ interface Waypoint {
     name: string;
   }
 interface SpotDetail {
+  information_url:string;
   url: string;
   name: string;
   address: string;
   evaluate: number;
   lat:number;
   lng:number;
-  priceLevels: number;
+  price_level: number;
+  explanation:string;
   distanceTime: {
     hour: number;
     min: number;
@@ -155,13 +157,15 @@ const Result: React.FC = () => {
         setShowDetails(true);
       }
       setSelected({
+        information_url:item.information_url,
         url: item.url,
         name: item.name,
         lat: item.lat,
         lng: item.lng,
         address: item.address,
         evaluate: item.evaluate, 
-        priceLevels: item.pricelevels,
+        price_level: item.price_level,
+        explanation:item.explanation,
         distanceTime: {
           hour: item.distanceTime.hour,
           min: item.distanceTime.min,
@@ -180,10 +184,15 @@ const Result: React.FC = () => {
           waypoints.map((item, index) => (
             <div key={index} className={`item-container ${selectedIndex === index ? 'selected' : ''}`} onClick={() => handleMarkerClick(item, index)}>
               <div className='spot-box'>
-              <p>{String.fromCharCode(66 + index)}: {item.name}</p>
-              <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
+                <div className='spot-box-top'>
+                  <p className='proposed-site'>{String.fromCharCode(66 + index)}: </p>
+                  <p className="distance-time">{item.distanceTime.hour}:{String(item.distanceTime.min).padStart(2, '0')}</p>
+                </div>
+                <div className='spot-box-bottom'>
+                  <p className='spot-name'>{item.name}</p>
+                </div>
               </div>
-              </div>
+            </div>
           ))
         ) : (
           <p>データがありません。</p>
@@ -224,16 +233,20 @@ const Result: React.FC = () => {
             <div className="detail-content">
               <img src={select.url} alt={select.name} className="spot-image" />
               <h2>{select.name}</h2>
+              <p>
+              URL: <a href={select.information_url} target="_blank" rel="noopener noreferrer">{select.information_url}</a>
+              </p>
               <p>住所: {select.address}</p>
               <div>
                 評価: <StarRating rating={select.evaluate} />
               </div>
 
-              <p>価格レベル: ¥{select.priceLevels}</p>
+              <p>価格: {typeof select.price_level === 'number' ? `¥${select.price_level}` : `${select.price_level*1000}~`}</p>
 
               <p>
                 距離時間: {select.distanceTime.hour}時{select.distanceTime.min}分
               </p>
+              <p>概要: {select.explanation}</p>
             </div>
           ) : (
             <p>スポット詳細情報</p>
